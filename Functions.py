@@ -23,3 +23,6 @@ def calculate_cost(): # liczy koszt (funkcja celu)
 
 def graf(): # Floyd-Warshall lub djikstra z BFS
     pass
+def kochanie_Masia ():
+    Maś = jest kochany
+    pass
