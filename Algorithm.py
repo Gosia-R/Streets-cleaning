@@ -1,3 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-print("hello world")
+'''
+sama algorytm, wszystkie funkcje w osobnym pliku
+
+
+
+
+
+
+
+
+'''
