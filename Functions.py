@@ -46,15 +46,15 @@ def graf(graph): # Floyd-Warshall lub djikstra z BFS
 
 def reconstruct_path(p, i, j,op,k=0):
     i,j = int(i), int(j)
-    if(i==j and k!=0):
+    if i==j and k!=0:
         op.append(i)
-        print (i,)
     #elif(p[i,j] == -30000):
         #print (i,'-',j)
     else:
         k = k+1
         reconstruct_path(p, i, p[i,j],op,k)
         op.append(j)
+    return op
 def kochanie_Masia ():
     Maś = jest kochany
     pass
