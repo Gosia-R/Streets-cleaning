@@ -3,6 +3,7 @@
 import numpy as np
 import Worker
 import Street
+import random
 
 #Stworzenie obiektów będzie pomagać
 workers = Worker.Workers()
@@ -46,8 +47,7 @@ def initialize(workers,streets): # inicjalizacja pierwszego rozwiazania
        p = graf(streets.L)
        workers.trasy[j] = reconstruct_path(p,workers.trasy[j][-1][1],0, workers.trasy[j]) #może Floyda robić już w klasie
     return workers.trasy
-def mutate(): # mutacje, mozliwe ze lepiej zrobic 3 osobne funkcje dla kazdej mutacji
-    pass
+
 
 def is_allowed(): #s sprawdza czy dana mutacja jest dozwolona (czy wszystkie ulice sa posprzatane
     pass
@@ -117,6 +117,30 @@ def reconstruct_path(p, i, j,op):
             k = int(k)
         op.append([k, j])
     return op
+
+def mutate(workers : Worker.Workers, streets.p : Street.Streets): # mutacje, mozliwe ze lepiej zrobic 3 osobne funkcje dla kazdej mutacji
+    chosen_mutation = random.choices([1, 2, 3], [45, 55 / 2, 55 / 2], 1)  # rozne mutacje maja rozne prawdopodobienstwa
+
+    if chosen_mutation == 1:  # zmiana ścieżki
+        chosen_worker = random.randrange(0, workers.m)  # wybor losowego pracownika
+        chosen_nodes_list = random.choices(workers.trasy[chosen_worker], k=2)  # wybor dwoch losowych skrzyzowan
+        starting_node, temp1 = chosen_nodes_list[0]  # pozyskanie punktu startowego
+        chosen_node_idx1 = workers.trasy[chosen_worker].index(chosen_nodes_list[0])  # znalezienie indeksu miejsca w ktorym trasa zaczyna sie zmieniac
+        temp2, finishing_node = chosen_nodes_list[1]  # pozyskanie punku koncowego
+        chosen_node_idx2 = workers.trasy[chosen_worker].index(
+        chosen_nodes_list[1])  # znalezienie indeksu miejsca w ktorym trasa konczy sie zemieniac
+        mutated_path = []
+        mutated_path = reconstruct_path(streets.p, starting_node, finishing_node, mutated_path)  # uzyskanie zmienionej trasy miedzy dwoma punktami
+        workers.trasy[chosen_worker] = workers.trasy[chosen_worker][:chosen_node_idx1] + mutated_path + workers.trasy[chosen_worker][chosen_node_idx2 + 1:]  # zmiana rozwiazania
+    elif chosen_mutation == 2:
+        chosen_worker = random.randrange(0, workers.m)  # wybor losowego pracownika
+        workers.trasy[chosen_worker] = workers.trasy[chosen_worker].reversed()  # pracownik przechodzi trase w inna strone
+    elif chosen_mutation == 3:  # para pracownikow zamienia trasy
+        '''
+        chosen_workers_list = random.choices(workers.trasy, k=2)
+        chosen_worker_idx1 = workers.trasy.index(chosen_workers_list[0])
+        chosen_worker_idx2 = workers.trasy.index(chosen_workers_list[1])
+    '''
 
 c = initialize(workers,streets)
 print(c)
