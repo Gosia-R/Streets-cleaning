@@ -14,31 +14,33 @@ funkcje potrzebne do algorytmu
 
 '''
 def finding_next_poit_init(i,n,P,A):
-    for k in range(n):
+    for k in range(n): #iterujemy
         if A[i, k] == 1 and ((i, k) and (k, i) not in P):
             return k
     return -1
-def finding_next_poit_init_not_OG(i,n,P,A):
+
+def finding_next_poit_init_already_cleaned(i,n,P,A):
     for k in range(n):
         if A[i, k] == 1 :
             return k
     return -1
 
-def initialize(Workers): # inicjalizacja pierwszego rozwiazania
-   i = 0
-   while len(P)!= n:
-       for j in range (0,w): # inny range ale nwm jaki
-            next_node = finding_next_poit_init(i, n, P, A)
+def initialize(workers,streets): # inicjalizacja pierwszego rozwiazania
+    i = 0
+    while len(streets.P)!= streets.n: #dopóki każda ulica nie będzie w P
+        for j in range (0,workers.m): # iterujemy po pracownikach
+            next_node = finding_next_poit_init(i, streets.n, streets.P, streets.A)#szukamy następnej ulicy, takej któr
             if next_node != -1:
-                pi[j].append(i, next_node)
-                P.append(i, next_node)
+                workers.trasy[j].append(i, next_node)
+                workers.P.append(i, next_node)
             else:
-                next_node = finding_next_poit_init_not_OG(i,n,P,A)
-                pi[j].append(i, next_node)
+                next_node = finding_next_poit_init_already_cleaned(i, streets.n, workers.P, streets.A)
+                workers.trasy[j].append(i, next_node)
             i = next_node
-   for j in range(0, w):
-       pi[j,:] = reconstruct_path(p,pi[j,-1](1),0,pi[j,:])
-    return pi
+    for j in range(0, workers.m):
+       p = graf(streets.L)
+       workers.trasy[j,:] = reconstruct_path(p,workers.trasy[j,-1](1),0, workers.trasy[j,:]) #może Floyda robić już w klasie
+    return workers.trasy
 def mutate(): # mutacje, mozliwe ze lepiej zrobic 3 osobne funkcje dla kazdej mutacji
     pass
 
@@ -94,22 +96,26 @@ def graf(graph): # Floyd-Warshall lub djikstra z BFS
     return p
 
 def reconstruct_path(p, i, j,op):
-    if (p[i, j] == i):
-        op = np.append(op, (i, j))
+    if p[i, j] == i:
+        op.append([i, j])
         return op
-    elif (p[i, j] == -30000):
+    elif p[i, j] == -30000:
         print(i, '-', j)
     else:
-        op = np.append(op, (i, p[i, j]))
+        op.append([i, int(p[i, j])])
         k = p[i, j]
         k = int(k)
         while p[i, k] != i:
             k = int(k)
-            op = np.append(op, (k, p[i, k]))
+            op.append([k, int(p[i, k])])
             k = p[i, k]
             k = int(k)
-        op = np.append(op, (k, j))
+        op.append([k, j])
     return op
-def kochanie_Masia ():
-    Maś = jest kochany
-    pass
+
+graph = np.array([[0,10,20,30,50,30],[5,6,7,4,30,7],[3,5,1,3,4,5],[1,5,6,40,10,5],[2,3,12,34,34,4],[45,5,7,9,6,34]])
+op =  []
+p = graf(graph)
+# reconstruct the path from 0 to 5
+c = (reconstruct_path(p,0,4,op))
+print(c)
