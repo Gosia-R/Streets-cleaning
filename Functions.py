@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import numpy as np
+
+
 '''
 funkcje potrzebne do algorytmu
 
@@ -41,8 +43,15 @@ def is_allowed(): #s sprawdza czy dana mutacja jest dozwolona (czy wszystkie uli
 def accept_new(): # sprawdza czy przyjmujemy wygenerowane rozwiazenie
     pass
 
-def calculate_cost(): # liczy koszt (funkcja celu)
-    pass
+def calculate_cost(workers:Workers, streets:Streets): # liczy koszt (funkcja celu)
+    current_worker_id = 0
+    cost = 0
+
+    for current_worker in workers:   # petla przechodzaca po kazdym pracowniku
+        for street in current_worker:   # petla przechodzaca po kazdej ulicy (krotka z numerami wierzcholkow) danego pracownika
+            cost += streets.L[tuple(street)] * streets.G[tuple(street)] / workers.w[current_worker_id] # zwiekszenie funkcji kosztu
+        current_worker_id += 1  # id kolejnego pracownika
+    return cost
 
 def graf(graph): # Floyd-Warshall lub djikstra z BFS
     #Floyd z opensourca,
