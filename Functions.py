@@ -1,7 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import numpy as np
+import Worker
+import Street
 
+#Stworzenie obiektów będzie pomagać
+workers = Worker.Workers()
+streets = Street.Streets()
 
 '''
 funkcje potrzebne do algorytmu
@@ -54,12 +59,12 @@ def is_cleaned(street: tuple, helper_matrix: np.array, G: np.array): # funkcja s
         return 0.5, helper_matrix       # zwraca koszt przejscia posprzatana ulica oraz niezmieniona macierz helper_matrix
 
 
-def calculate_cost(workers:Workers, streets:Streets): # liczy koszt (funkcja celu)
+def calculate_cost(workers: Worker.Workers, streets: Street.Streets): # liczy koszt (funkcja celu)
     current_worker_id = 0
     cost = 0
     helper_matrix = np.zeros(streets.G.shape()) # macierz sprawdzajaca czy ulica jest posprzatana ( 0 - nie posprzatana, 1 - posprzatana)
 
-    for current_worker in workers:   # petla przechodzaca po kazdym pracowniku
+    for current_worker in workers.trasy:   # petla przechodzaca po kazdym pracowniku
         for street in current_worker:   # petla przechodzaca po kazdej ulicy (krotka z numerami wierzcholkow) danego pracownika
             g_value, helper_matrix = is_cleaned(tuple(street), helper_matrix, streets.G)
             cost += streets.L[tuple(street)] * g_value / workers.w[current_worker_id] # zwiekszenie funkcji kosztu

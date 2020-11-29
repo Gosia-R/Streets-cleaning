@@ -11,6 +11,6 @@ class Workers :
     def __init__(self):
         self.m = 3 # ilosc pracownikow
 
-        self.wydajnosc = np.array([10, 10, 30])
+        self.w = np.array([10, 10, 30])
 
         self.trasy = np.array([np.array([])]) # wektor zawierajacy kolejno ulice (para wierzcholkow) ktorymi przechodzi kazdy pracownik
