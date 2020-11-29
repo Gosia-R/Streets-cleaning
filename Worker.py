@@ -13,4 +13,4 @@ class Workers :
 
         self.w = np.array([10, 10, 30])
 
-        self.trasy = np.array([np.array([])]) # wektor zawierajacy kolejno ulice (para wierzcholkow) ktorymi przechodzi kazdy pracownik
+        self.trasy = [] # wektor zawierajacy kolejno ulice (para wierzcholkow) ktorymi przechodzi kazdy pracownik

@@ -15,27 +15,27 @@ class Streets:
     def __init__(self):
         self.n = 5  # liczba skrzyzowan
 
-        self.A = [[0, 1, 1, 0, 0],  # macierz polaczen pomiedzy skrzyzowaniami
-                  [1, 0, 0, 0, 1],
-                  [1, 0, 0, 1, 1],
-                  [0, 0, 1, 0, 1],
-                  [0, 1, 1, 1, 0]]
+        self.A = np.array([[0, 1, 1, 0, 0],  # macierz polaczen pomiedzy skrzyzowaniami
+                           [1, 0, 0, 0, 1],
+                           [1, 0, 0, 1, 1],
+                           [0, 0, 1, 0, 1],
+                           [0, 1, 1, 1, 0]])
 
-        self.L = [[0, 55, 18, 0, 0],  # macierz odleglosci pomiedzy skrzyzowaniami
-                  [55, 0, 0, 0, 74],
-                  [18, 0, 0, 68, 73],
-                  [0, 0, 68, 0, 78],
-                  [0, 74, 73, 78, 0]]
+        self.L = np.array([[0, 55, 18, 0, 0],  # macierz odleglosci pomiedzy skrzyzowaniami
+                           [55, 0, 0, 0, 74],
+                           [18, 0, 0, 68, 73],
+                           [0, 0, 68, 0, 78],
+                           [0, 74, 73, 78, 0]])
 
-        self.G = [[0, 2, 2, 0, 0], # macierz zabrudzenia ulic
-                  [2, 0, 0, 0, 2],
-                  [2, 0, 0, 3, 1],
-                  [0, 0, 3, 0, 3],
-                  [0, 2, 1, 3, 0]]
+        self.G = np.array([[0, 2, 2, 0, 0],  # macierz zabrudzenia ulic
+                           [2, 0, 0, 0, 2],
+                           [2, 0, 0, 3, 1],
+                           [0, 0, 3, 0, 3],
+                           [0, 2, 1, 3, 0]])
 
-        self.n = np.sum(np.triu(self.A, 1))  # liczba ulic
+        self.r = np.sum(np.triu(self.A, 1))  # liczba ulic
 
-        self.P = np.array([]) # wektor posprzatanych ulic
+        self.P = []  # wektor posprzatanych ulic
 
     def generate_new_A(self):
         matrix = np.random.rand(self.n, self.n)
