@@ -14,32 +14,37 @@ funkcje potrzebne do algorytmu
 
 '''
 def finding_next_poit_init(i,n,P,A):
-    for k in range(n): #iterujemy
-        if A[i, k] == 1 and ((i, k) and (k, i) not in P):
-            return k
+    for k in range(n): #iterujemy po skrzyżowaniach
+        if A[i, k] and ([i, k] not in P) and ([k, i] not in P):  #do trasy szukamy tylko takej ulicy która nie została posprzątana
+                return k
     return -1
 
 def finding_next_poit_init_already_cleaned(i,n,P,A):
-    for k in range(n):
-        if A[i, k] == 1 :
+    for k in range(n): #iterujemy po skrzyżowaniach
+        if A[i, k]  : #do trasy szukamy którejkolwiek ulicy
             return k
     return -1
 
 def initialize(workers,streets): # inicjalizacja pierwszego rozwiazania
     i = 0
-    while len(streets.P)!= streets.n: #dopóki każda ulica nie będzie w P
-        for j in range (0,workers.m): # iterujemy po pracownikach
-            next_node = finding_next_poit_init(i, streets.n, streets.P, streets.A)#szukamy następnej ulicy, takej któr
+    for j in range(0, workers.m):
+        workers.trasy.append([])
+    while len(streets.P)< streets.r: #dopóki każda ulica nie będzie w P
+        for j in range (0,workers.m): #iterujemy po pracownikach
+            if i != 0:
+                i = int(workers.trasy[j][-1][1])
+            next_node = finding_next_poit_init(i, streets.n, streets.P, streets.A)#szukamy następnej ulicy, takej która jeszcze nie została posprzątana
+
             if next_node != -1:
-                workers.trasy[j].append(i, next_node)
-                workers.P.append(i, next_node)
+                workers.trasy[j].append([i, next_node])  #dodajemy ulicę do trasy i rozwiąznia
+                streets.P.append([i, next_node])
             else:
-                next_node = finding_next_poit_init_already_cleaned(i, streets.n, workers.P, streets.A)
-                workers.trasy[j].append(i, next_node)
-            i = next_node
+                next_node = finding_next_poit_init_already_cleaned(i, streets.n, streets.P, streets.A)#szukamy następnej ulicy, jakielkolwiek
+                workers.trasy[j].append([i, next_node]) #dodajemy ulicę do trasy
+        i = 1
     for j in range(0, workers.m):
        p = graf(streets.L)
-       workers.trasy[j,:] = reconstruct_path(p,workers.trasy[j,-1](1),0, workers.trasy[j,:]) #może Floyda robić już w klasie
+       workers.trasy[j] = reconstruct_path(p,workers.trasy[j][-1][1],0, workers.trasy[j]) #może Floyda robić już w klasie
     return workers.trasy
 def mutate(): # mutacje, mozliwe ze lepiej zrobic 3 osobne funkcje dla kazdej mutacji
     pass
@@ -113,9 +118,5 @@ def reconstruct_path(p, i, j,op):
         op.append([k, j])
     return op
 
-graph = np.array([[0,10,20,30,50,30],[5,6,7,4,30,7],[3,5,1,3,4,5],[1,5,6,40,10,5],[2,3,12,34,34,4],[45,5,7,9,6,34]])
-op =  []
-p = graf(graph)
-# reconstruct the path from 0 to 5
-c = (reconstruct_path(p,0,4,op))
+c = initialize(workers,streets)
 print(c)
