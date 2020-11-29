@@ -43,13 +43,26 @@ def is_allowed(): #s sprawdza czy dana mutacja jest dozwolona (czy wszystkie uli
 def accept_new(): # sprawdza czy przyjmujemy wygenerowane rozwiazenie
     pass
 
+def is_cleaned(street: tuple, helper_matrix: np.array, G: np.array): # funkcja sprawdzajaca czy ulica jest posprzatana
+    starting_index, final_index = street
+    reversed_street = final_index, starting_index     # ta sama ulica moze byc opisana z obu stron ( (3,1) = (1,3))
+    if helper_matrix[street] == 0:   # sprawdzenie czy ktos przeszedl ta ulica, jesli tak to jest ona posprzatana
+        helper_matrix[street] += 1   # ulica jest posprzatana
+        helper_matrix[reversed_street] += 1     # zachowanie symetrycznosci
+        return G[street], helper_matrix      # zwraca koszt posprzatania ulicy zgodny z macierza G oraz zmieniana macierz helper_matrix
+    else:
+        return 0.5, helper_matrix       # zwraca koszt przejscia posprzatana ulica oraz niezmieniona macierz helper_matrix
+
+
 def calculate_cost(workers:Workers, streets:Streets): # liczy koszt (funkcja celu)
     current_worker_id = 0
     cost = 0
+    helper_matrix = np.zeros(streets.G.shape()) # macierz sprawdzajaca czy ulica jest posprzatana ( 0 - nie posprzatana, 1 - posprzatana)
 
     for current_worker in workers:   # petla przechodzaca po kazdym pracowniku
         for street in current_worker:   # petla przechodzaca po kazdej ulicy (krotka z numerami wierzcholkow) danego pracownika
-            cost += streets.L[tuple(street)] * streets.G[tuple(street)] / workers.w[current_worker_id] # zwiekszenie funkcji kosztu
+            g_value, helper_matrix = is_cleaned(tuple(street), helper_matrix, streets.G)
+            cost += streets.L[tuple(street)] * g_value / workers.w[current_worker_id] # zwiekszenie funkcji kosztu
         current_worker_id += 1  # id kolejnego pracownika
     return cost
 
