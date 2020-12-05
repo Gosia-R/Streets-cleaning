@@ -63,7 +63,7 @@ def is_allowed(): #s sprawdza czy dana mutacja jest dozwolona (czy wszystkie uli
 def accept_new(): # sprawdza czy przyjmujemy wygenerowane rozwiazenie
     pass
 
-def is_cleaned(street: tuple, helper_matrix: np.array, G: np.array): # funkcja sprawdzajaca czy ulica jest posprzatana 
+def is_cleaned(street: tuple, helper_matrix: np.array, G: np.array): # funkcja sprawdzajaca czy ulica jest posprzatana
     starting_index, final_index = street
     reversed_street = final_index, starting_index     # ta sama ulica moze byc opisana z obu stron ( (3,1) = (1,3))
     if helper_matrix[street] == 0:   # sprawdzenie czy ktos przeszedl ta ulica, jesli tak to jest ona posprzatana
@@ -126,10 +126,10 @@ def reconstruct_path(p, i, j,op):
         op.append([k, j])
     return op
 
-def mutate(workers : Worker.Workers ) : # mutacje, mozliwe ze lepiej zrobic 3 osobne funkcje dla kazdej mutacji
+def mutate(workers : Worker.Workers, streets.p : Street.Streets): # mutacje, mozliwe ze lepiej zrobic 3 osobne funkcje dla kazdej mutacji
     chosen_mutation = random.choices([1, 2, 3], [45, 55 / 2, 55 / 2], 1)  # rozne mutacje maja rozne prawdopodobienstwa
 
-    if chosen_mutation == 1:  # zmiana ścieżki
+    if chosen_type == 1:  # zmiana ścieżki
         chosen_worker = random.randrange(0, workers.m)  # wybor losowego pracownika
         chosen_nodes_list = random.choices(workers.trasy[chosen_worker], k=2)  # wybor dwoch losowych skrzyzowan
         starting_node, temp1 = chosen_nodes_list[0]  # pozyskanie punktu startowego
@@ -140,11 +140,10 @@ def mutate(workers : Worker.Workers ) : # mutacje, mozliwe ze lepiej zrobic 3 os
         mutated_path = []
         mutated_path = reconstruct_path(streets.p, starting_node, finishing_node, mutated_path)  # uzyskanie zmienionej trasy miedzy dwoma punktami
         workers.trasy[chosen_worker] = workers.trasy[chosen_worker][:chosen_node_idx1] + mutated_path + workers.trasy[chosen_worker][chosen_node_idx2 + 1:]  # zmiana rozwiazania
-    elif chosen_mutation == 2:
+    elif chosen_type == 2:
         chosen_worker = random.randrange(0, workers.m)  # wybor losowego pracownika
         workers.trasy[chosen_worker] = workers.trasy[chosen_worker].reversed()  # pracownik przechodzi trase w inna strone
-    elif chosen_mutation == 3:  # para pracownikow zamienia trasy
-        '''
+    elif chosen_type == 3:  # para pracownikow zamienia trasy
         chosen_workers_list = random.choices(workers.trasy, k=2)
         chosen_worker_idx1 = workers.trasy.index(chosen_workers_list[0])
         chosen_worker_idx2 = workers.trasy.index(chosen_workers_list[1])
