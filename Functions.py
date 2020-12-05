@@ -52,12 +52,11 @@ def initialize(workers,streets): # inicjalizacja pierwszego rozwiazania
                 workers.trasy[j].append([i, next_node]) #dodajemy ulicę do trasy
         i = 1
     for j in range(0, workers.m):
-       p = graf(streets.L)
-       workers.trasy[j] = reconstruct_path(p,workers.trasy[j][-1][1],0, workers.trasy[j]) #może Floyda robić już w klasie
+       workers.trasy[j] = reconstruct_path(workers.fw_graph, workers.trasy[j][-1][1],0, workers.trasy[j]) #może Floyda robić już w klasie
     return workers.trasy
 
 
-def is_allowed(): #s sprawdza czy dana mutacja jest dozwolona (czy wszystkie ulice sa posprzatane)
+def is_allowed(): #s sprawdza czy dana mutacja jest dozwolona (czy wszystkie ulice sa posprzatane
     pass
 
 def accept_new(): # sprawdza czy przyjmujemy wygenerowane rozwiazenie
@@ -86,27 +85,6 @@ def calculate_cost(workers: Worker.Workers, streets: Street.Streets): # liczy ko
         current_worker_id += 1  # id kolejnego pracownika
     return cost
 
-def graf(graph): # Floyd-Warshall lub djikstra z BFS
-    #Floyd z opensourca,
-    #number of vertices
-    v = len(graph)
-
-    # path reconstruction matrix
-    p = np.zeros(graph.shape)
-    for i in range(0, v):
-        for j in range(0, v):
-            p[i, j] = i
-            if graph[i,j] == 0:
-                p[i,j] = -30000
-                graph[i,j] = 30000 # set zeros to any large number which is bigger then the longest way
-
-    for k in range(0, v):
-        for i in range(0, v):
-            for j in range(0, v):
-                if graph[i, j] > graph[i, k] + graph[k, j]:
-                    graph[i, j] = graph[i, k] + graph[k, j]
-                    p[i, j] = p[k, j]
-    return p
 
 def reconstruct_path(p, i, j,op):
     if p[i, j] == i:
@@ -126,8 +104,9 @@ def reconstruct_path(p, i, j,op):
         op.append([k, j])
     return op
 
-def mutate(workers : Worker.Workers, streets.p : Street.Streets): # mutacje, mozliwe ze lepiej zrobic 3 osobne funkcje dla kazdej mutacji
-    chosen_mutation = random.choices([1, 2, 3], [45, 55 / 2, 55 / 2], 1)  # rozne mutacje maja rozne prawdopodobienstwa
+
+def adjacent_solution(workers : Worker.Workers, fw_graph): # mutacje, mozliwe ze lepiej zrobic 3 osobne funkcje dla kazdej mutacji
+    chosen_type = random.choices([1, 2, 3], [45, 55 / 2, 55 / 2], 1)  # rozne mutacje maja rozne prawdopodobienstwa
 
     if chosen_type == 1:  # zmiana ścieżki
         chosen_worker = random.randrange(0, workers.m)  # wybor losowego pracownika
@@ -138,16 +117,18 @@ def mutate(workers : Worker.Workers, streets.p : Street.Streets): # mutacje, moz
         chosen_node_idx2 = workers.trasy[chosen_worker].index(
         chosen_nodes_list[1])  # znalezienie indeksu miejsca w ktorym trasa konczy sie zemieniac
         mutated_path = []
-        mutated_path = reconstruct_path(streets.p, starting_node, finishing_node, mutated_path)  # uzyskanie zmienionej trasy miedzy dwoma punktami
+        mutated_path = reconstruct_path(fw_graph, starting_node, finishing_node, mutated_path)  # uzyskanie zmienionej trasy miedzy dwoma punktami
         workers.trasy[chosen_worker] = workers.trasy[chosen_worker][:chosen_node_idx1] + mutated_path + workers.trasy[chosen_worker][chosen_node_idx2 + 1:]  # zmiana rozwiazania
     elif chosen_type == 2:
         chosen_worker = random.randrange(0, workers.m)  # wybor losowego pracownika
+        for street in chosen_worker:
+            workers.trasy[chosen_worker][street] = workers.trasy[chosen_worker][street].revesed()
         workers.trasy[chosen_worker] = workers.trasy[chosen_worker].reversed()  # pracownik przechodzi trase w inna strone
     elif chosen_type == 3:  # para pracownikow zamienia trasy
         chosen_workers_list = random.choices(workers.trasy, k=2)
-        chosen_worker_idx1 = workers.trasy.index(chosen_workers_list[0])
+        chosen_worker_idx1 = workers.trasy.index(chosen_workers_list[0]) 
         chosen_worker_idx2 = workers.trasy.index(chosen_workers_list[1])
-    '''
+
 
 c = initialize(workers,streets)
 print(c)
