@@ -14,3 +14,13 @@ class Workers :
         self.w = np.array([10, 10, 30])
 
         self.trasy = [] # wektor zawierajacy kolejno ulice (para wierzcholkow) ktorymi przechodzi kazdy pracownik
+
+
+    def route_lengths(self, L : np.array):
+        route_lengths_list = []
+        idx = 0
+        for current_worker in self.trasy:
+            for current_street in current_worker:
+                route_lengths_list[idx] += L[tuple(current_street)]
+            idx += 1
+        return route_lengths_list
