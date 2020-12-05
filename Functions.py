@@ -52,7 +52,7 @@ def initialize(workers,streets): # inicjalizacja pierwszego rozwiazania
                 workers.trasy[j].append([i, next_node]) #dodajemy ulicę do trasy
         i = 1
     for j in range(0, workers.m):
-       workers.trasy[j] = reconstruct_path(workers.fw_graph, workers.trasy[j][-1][1],0, workers.trasy[j]) #może Floyda robić już w klasie
+       workers.trasy[j] = reconstruct_path(streets.fw_graph, workers.trasy[j][-1][1],0, workers.trasy[j]) #może Floyda robić już w klasie
     return workers.trasy
 
 
@@ -79,7 +79,7 @@ def is_cleaned(street: tuple, helper_matrix: np.array, G: np.array): # funkcja s
 def calculate_cost(workers: Worker.Workers, streets: Street.Streets): # liczy koszt (funkcja celu)
     current_worker_id = 0
     cost = 0
-    helper_matrix = np.zeros(streets.G.shape()) # macierz sprawdzajaca czy ulica jest posprzatana ( 0 - nie posprzatana, 1 - posprzatana)
+    helper_matrix = np.zeros(streets.G.shape) # macierz sprawdzajaca czy ulica jest posprzatana ( 0 - nie posprzatana, 1 - posprzatana)
 
     for current_worker in workers.trasy:   # petla przechodzaca po kazdym pracowniku
         for street in current_worker:   # petla przechodzaca po kazdej ulicy (krotka z numerami wierzcholkow) danego pracownika
@@ -109,7 +109,7 @@ def reconstruct_path(p, i, j,op):
 
 
 def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # mutacje, mozliwe ze lepiej zrobic 3 osobne funkcje dla kazdej mutacji
-    chosen_type = random.choices([1, 2, 3], [45, 55 / 2, 55 / 2], 1)  # rozne mutacje maja rozne prawdopodobienstwa
+    chosen_type = random.choices(population = [1, 2, 3],weights =  [45, 55 / 2, 55 / 2], k = 1)  # rozne mutacje maja rozne prawdopodobienstwa
 
 
     if chosen_type == 1:  # zmiana ścieżki

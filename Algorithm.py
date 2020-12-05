@@ -17,12 +17,14 @@ streets = Street.Streets()
 
 Functions.initialize(workers, streets)
 current_cost = Functions.calculate_cost(workers, streets)
+cost_list = [current_cost]
 
 while temperature > 1:
     new_workers = workers
     Functions.adjacent_solution(new_workers, streets)
 
     new_cost = Functions.calculate_cost(new_workers, streets)
+    cost_list.append(new_cost)
     delta = current_cost - new_cost
 
     if delta > 0:
@@ -35,3 +37,4 @@ while temperature > 1:
             pass
 
     temperature *= alfa
+
