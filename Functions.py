@@ -132,8 +132,8 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
         chosen_worker = random.randrange(0, new_worker.m)  # wybor losowego pracownika
         for street in new_worker.trasy[chosen_worker]:
             street_idx = new_worker.trasy[chosen_worker].index(street)
-            new_worker.trasy[chosen_worker][street_idx] = new_worker.trasy[chosen_worker][street_idx].revesed()
-        new_worker.trasy[chosen_worker] = new_worker.trasy[chosen_worker].reversed()  # pracownik przechodzi trase w inna strone
+            new_worker.trasy[chosen_worker][street_idx] = new_worker.trasy[chosen_worker][street_idx].reverse()
+        new_worker.trasy[chosen_worker] = new_worker.trasy[chosen_worker].reverse()  # pracownik przechodzi trase w inna strone
     elif chosen_type == 3:  # para pracownikow zamienia trasy
         chosen_workers_list = random.choices(new_worker.trasy, k=3)
         chosen_worker_idx1 = new_worker.trasy.index(chosen_workers_list[0])
@@ -165,11 +165,12 @@ def create_new_P(trasy : list, new_path : list, path_idx :int):
     return new_P
 
 def fix  (streets: Street.Streets, new_workers : Worker.Workers):
-    x, y = np.nonzero(np.triu(streets.A))
+    x, y = np.where(np.triu(streets.A))
+
     omitted_streets = []
     route_lengths_list = new_workers.route_lengths(streets.L)
     route_lengths_list_copy = route_lengths_list[:]
-    temp_flag = False
+    temp_flag = True
     licz = 0
     path_size = len(new_workers.P)
     for idx in range(0,len(x)):
@@ -180,13 +181,17 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
         temp_flag = False
         min_index = route_lengths_list.index(min(route_lengths_list))
         while len(new_workers.P) < path_size + licz:
-            if temp_flag:
-                route_lengths_list_copy[min_index] = 21370000
+            if  temp_flag:
+                print(route_lengths_list_copy[min_index])
+                route_lengths_list_copy[min_index] = 2138764
                 min_index = route_lengths_list_copy.index(min(route_lengths_list_copy))
-            for jdx in range (0, len(workers.trasy[min_index])):
-                if x[idx] or y[idx] in workers.trasy[min_index][jdx]:
+            for jdx in range(len(new_workers.trasy[min_index])):
+                idx = int(idx)
+                jdx = int(jdx)
+                min_index = int(min_index)
+                if (int(x[idx]) == new_workers.trasy[min_index][jdx][0])or(int(x[idx]) == new_workers.trasy[min_index][jdx][1]) or (int(y[idx]) == new_workers.trasy[min_index][jdx][1]) or (int(y[idx]) == new_workers.trasy[min_index][jdx][0]):
                     new_workers.P.append([x[idx],y[idx]])
-                    new_workers.trasy[min_index] = fix_add_street(new_workers.trasy[min_index],x[idx],y[idx],jdx)
+                    new_workers.trasy[min_index] = fix_add_street(new_workers.trasy[min_index],int(x[idx]),int(y[idx]),jdx)
                     temp_flag = True
                     break
 
@@ -196,7 +201,7 @@ def fix_add_street(trasa,x,y,jdx):
     front_half = trasa[:jdx]
     back_half = trasa[jdx+1:]
     if trasa[jdx][0] == x:
-        trasa = front_half + [x,y] + back_half
+        trasa = front_half + [[x,y]] + back_half
     else:
-        trasa = front_half + [y, x] + back_half
+        trasa = front_half + [[y,x]] + back_half
     return trasa
