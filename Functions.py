@@ -15,16 +15,24 @@ funkcje potrzebne do algorytmu
 
 '''
 def finding_next_poit_init(i,n,P,A):
+    chosen_streets_list = []
     for k in range(n): #iterujemy po skrzyżowaniach
         if A[i, k] and ([i, k] not in P) and ([k, i] not in P):  #do trasy szukamy tylko takej ulicy która nie została posprzątana
-                return k
-    return -1
+                chosen_streets_list.append(k)
+    if len(chosen_streets_list )!= 0:
+        return random.choice(chosen_streets_list)
+    else:
+        return -1
 
 def finding_next_poit_init_already_cleaned(i,n,P,A):
+    chosen_streets_list = []
     for k in range(n): #iterujemy po skrzyżowaniach
         if A[i, k]  : #do trasy szukamy którejkolwiek ulicy
-            return k
-    return -1
+            chosen_streets_list.append(k)
+    if len(chosen_streets_list) != 0:
+        return random.choice(chosen_streets_list)
+    else:
+        return -1
 
 def initialize(workers,streets): # inicjalizacja pierwszego rozwiazania
     i = 0
@@ -49,13 +57,13 @@ def initialize(workers,streets): # inicjalizacja pierwszego rozwiazania
     return workers.trasy
 
 
-def is_allowed(): #s sprawdza czy dana mutacja jest dozwolona (czy wszystkie ulice sa posprzatane
+def is_allowed(): #s sprawdza czy dana mutacja jest dozwolona (czy wszystkie ulice sa posprzatane)
     pass
 
 def accept_new(): # sprawdza czy przyjmujemy wygenerowane rozwiazenie
     pass
 
-def is_cleaned(street: tuple, helper_matrix: np.array, G: np.array): # funkcja sprawdzajaca czy ulica jest posprzatana
+def is_cleaned(street: tuple, helper_matrix: np.array, G: np.array): # funkcja sprawdzajaca czy ulica jest posprzatana 
     starting_index, final_index = street
     reversed_street = final_index, starting_index     # ta sama ulica moze byc opisana z obu stron ( (3,1) = (1,3))
     if helper_matrix[street] == 0:   # sprawdzenie czy ktos przeszedl ta ulica, jesli tak to jest ona posprzatana
@@ -118,7 +126,7 @@ def reconstruct_path(p, i, j,op):
         op.append([k, j])
     return op
 
-def mutate(workers : Worker.Workers, streets.p : Street.Streets): # mutacje, mozliwe ze lepiej zrobic 3 osobne funkcje dla kazdej mutacji
+def mutate(workers : Worker.Workers ) : # mutacje, mozliwe ze lepiej zrobic 3 osobne funkcje dla kazdej mutacji
     chosen_mutation = random.choices([1, 2, 3], [45, 55 / 2, 55 / 2], 1)  # rozne mutacje maja rozne prawdopodobienstwa
 
     if chosen_mutation == 1:  # zmiana ścieżki
