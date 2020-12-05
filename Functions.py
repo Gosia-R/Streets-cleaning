@@ -56,8 +56,11 @@ def initialize(workers,streets): # inicjalizacja pierwszego rozwiazania
     return workers.trasy
 
 
-def is_allowed(): #s sprawdza czy dana mutacja jest dozwolona (czy wszystkie ulice sa posprzatane
-    pass
+def is_allowed(streets: Street.Streets ): #s sprawdza czy dana mutacja jest dozwolona (czy wszystkie ulice sa posprzatane
+    if len(streets.P) == streets.r:
+        return True
+    else:
+        return False
 
 def accept_new(): # sprawdza czy przyjmujemy wygenerowane rozwiazenie
     pass
@@ -141,5 +144,19 @@ def adjacent_solution(workers : Worker.Workers, streets : Street.Streets): # mut
         workers.trasy[most_efficient_worker] = workers.trasy[longest_route_idx]
         workers.trasy[longest_route_idx] = temp
 
-c = initialize(workers,streets)
-print(c)
+def fix  (streets: Street.Streets, workers : Worker.Workers):
+    x, y = np.nonzero(np.triu(streets.A))
+    omitted_streets = []
+    route_lengths_list = workers.route_lengths(streets.L)
+    min_index = route_lengths_list.index(min(route_lengths_list))
+    for idx in range(0,len(x)):
+        if [x[idx],y[idx]] or [y[idx],x[idx]] not in streets.P:
+            omitted_streets.append([x[idx],y[idx]])
+    for idx in range (0,len(omitted_streets)):
+        for jdx in range (0, len(workers.trasy[min_index])):
+            if x(idx) or y(idx) in workers.trasy[min_index][jdx]:
+
+    pass
+
+
+print((np.nonzero(np.triu(streets.A))))
