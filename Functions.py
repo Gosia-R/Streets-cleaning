@@ -130,8 +130,9 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
             fix(streets, new_worker)
     elif chosen_type == 2:
         chosen_worker = random.randrange(0, new_worker.m)  # wybor losowego pracownika
-        for street in chosen_worker:
-            new_worker.trasy[chosen_worker][street] = new_worker.trasy[chosen_worker][street].revesed()
+        for street in new_worker.trasy[chosen_worker]:
+            street_idx = new_worker.trasy[chosen_worker].index(street)
+            new_worker.trasy[chosen_worker][street_idx] = new_worker.trasy[chosen_worker][street_idx].revesed()
         new_worker.trasy[chosen_worker] = new_worker.trasy[chosen_worker].reversed()  # pracownik przechodzi trase w inna strone
     elif chosen_type == 3:  # para pracownikow zamienia trasy
         chosen_workers_list = random.choices(new_worker.trasy, k=3)
@@ -157,7 +158,7 @@ def create_new_P(trasy : list, new_path : list, path_idx :int):
         if idx == path_idx:
             current_worker = new_path
         for current_street in current_worker:
-            if current_street not in new_P and current_street.reversed() not in new_P:
+            if current_street not in new_P and current_street.reverse() not in new_P:
                 new_P.append(current_street)
 
     return new_P

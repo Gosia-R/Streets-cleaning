@@ -11,7 +11,7 @@ class Workers :
     def __init__(self):
         self.m = 5 # ilosc pracownikow
 
-        self.w = np.array([10, 10, 30, 15, 20])
+        self.w = [10, 10, 30, 15, 20]
 
         self.trasy = [] # wektor zawierajacy kolejno ulice (para wierzcholkow) ktorymi przechodzi kazdy pracownik
 
@@ -21,6 +21,7 @@ class Workers :
         route_lengths_list = []
         idx = 0
         for current_worker in self.trasy:
+            route_lengths_list.append(0)
             for current_street in current_worker:
                 route_lengths_list[idx] += L[tuple(current_street)]
             idx += 1
