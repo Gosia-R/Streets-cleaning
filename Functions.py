@@ -105,7 +105,7 @@ def reconstruct_path(p, i, j,op):
     return op
 
 
-def adjacent_solution(workers : Worker.Workers, fw_graph): # mutacje, mozliwe ze lepiej zrobic 3 osobne funkcje dla kazdej mutacji
+def adjacent_solution(workers : Worker.Workers, streets : Street.Streets): # mutacje, mozliwe ze lepiej zrobic 3 osobne funkcje dla kazdej mutacji
     chosen_type = random.choices([1, 2, 3], [45, 55 / 2, 55 / 2], 1)  # rozne mutacje maja rozne prawdopodobienstwa
 
     if chosen_type == 1:  # zmiana ścieżki
@@ -117,7 +117,7 @@ def adjacent_solution(workers : Worker.Workers, fw_graph): # mutacje, mozliwe ze
         chosen_node_idx2 = workers.trasy[chosen_worker].index(
         chosen_nodes_list[1])  # znalezienie indeksu miejsca w ktorym trasa konczy sie zemieniac
         mutated_path = []
-        mutated_path = reconstruct_path(fw_graph, starting_node, finishing_node, mutated_path)  # uzyskanie zmienionej trasy miedzy dwoma punktami
+        mutated_path = reconstruct_path(streets.fw_graph, starting_node, finishing_node, mutated_path)  # uzyskanie zmienionej trasy miedzy dwoma punktami
         workers.trasy[chosen_worker] = workers.trasy[chosen_worker][:chosen_node_idx1] + mutated_path + workers.trasy[chosen_worker][chosen_node_idx2 + 1:]  # zmiana rozwiazania
     elif chosen_type == 2:
         chosen_worker = random.randrange(0, workers.m)  # wybor losowego pracownika
@@ -125,10 +125,21 @@ def adjacent_solution(workers : Worker.Workers, fw_graph): # mutacje, mozliwe ze
             workers.trasy[chosen_worker][street] = workers.trasy[chosen_worker][street].revesed()
         workers.trasy[chosen_worker] = workers.trasy[chosen_worker].reversed()  # pracownik przechodzi trase w inna strone
     elif chosen_type == 3:  # para pracownikow zamienia trasy
-        chosen_workers_list = random.choices(workers.trasy, k=2)
+        chosen_workers_list = random.choices(workers.trasy, k=3)
         chosen_worker_idx1 = workers.trasy.index(chosen_workers_list[0]) 
         chosen_worker_idx2 = workers.trasy.index(chosen_workers_list[1])
-
+        chosen_worker_idx3 = workers.trasy.index(chosen_workers_list[2])
+        most_efficient_worker = workers.w.index(max([workers.w[chosen_worker_idx1], workers.w[chosen_worker_idx2], workers.w[chosen_worker_idx3]]))
+        route_length_list = []
+        idx = 0
+        for current_worker in chosen_workers_list:
+            for current_street in current_worker:
+                route_length_list[idx] += streets.L[tuple(current_street)]
+            idx += 1
+        longest_route_idx = workers.trasy.index(chosen_workers_list[route_length_list.index(max(route_length_list))])
+        temp = workers.trasy[most_efficient_worker]
+        workers.trasy[most_efficient_worker] = workers.trasy[longest_route_idx]
+        workers.trasy[longest_route_idx] = temp
 
 c = initialize(workers,streets)
 print(c)
