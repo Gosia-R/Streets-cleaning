@@ -109,8 +109,8 @@ def reconstruct_path(p, i, j,op):
 
 
 def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # mutacje, mozliwe ze lepiej zrobic 3 osobne funkcje dla kazdej mutacji
-    chosen_type = random.choices(population = [1, 2, 3],weights =  [45, 55 / 2, 55 / 2], k = 1)  # rozne mutacje maja rozne prawdopodobienstwa
-
+    chosen_type = random.choices(population=[1, 2, 3], weights=[45, 55 / 2, 55 / 2], k=1)  # rozne mutacje maja rozne prawdopodobienstwa
+    chosen_type = chosen_type[0]
 
     if chosen_type == 1:  # zmiana ścieżki
         chosen_worker = random.randrange(0, new_worker.m)  # wybor losowego pracownika

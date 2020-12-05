@@ -13,6 +13,7 @@ klasa zawierajaca informacje o ulicach:
 
 class Streets:
     def __init__(self):
+        '''
         self.n = 5  # liczba skrzyzowan
 
         self.A = np.array([[0, 1, 1, 0, 0],  # macierz polaczen pomiedzy skrzyzowaniami
@@ -32,6 +33,14 @@ class Streets:
                            [2, 0, 0, 3, 1],
                            [0, 0, 3, 0, 3],
                            [0, 2, 1, 3, 0]])
+        '''
+        self.n = 30
+
+        self.A = self.generate_new_A()
+
+        self.L = self.generate_new_L(10, 80)
+
+        self.G = self.generate_new_G()
 
         self.r = np.sum(np.triu(self.A, 1))  # liczba ulic
 

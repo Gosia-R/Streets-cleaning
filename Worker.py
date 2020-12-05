@@ -9,9 +9,9 @@ klasa zawierajaca informacje o pracownikach:
 
 class Workers :
     def __init__(self):
-        self.m = 3 # ilosc pracownikow
+        self.m = 5 # ilosc pracownikow
 
-        self.w = np.array([10, 10, 30])
+        self.w = np.array([10, 10, 30, 15, 20])
 
         self.trasy = [] # wektor zawierajacy kolejno ulice (para wierzcholkow) ktorymi przechodzi kazdy pracownik
 

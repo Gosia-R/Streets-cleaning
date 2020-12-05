@@ -5,6 +5,7 @@ import Worker
 import Functions
 import random
 import numpy as np
+import matplotlib.pyplot as plt
 
 '''
 sama algorytm, wszystkie funkcje w osobnym pliku
@@ -38,3 +39,5 @@ while temperature > 1:
 
     temperature *= alfa
 
+plt.plot(cost_list)
+plt.show()
