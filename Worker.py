@@ -15,6 +15,7 @@ class Workers :
 
         self.trasy = [] # wektor zawierajacy kolejno ulice (para wierzcholkow) ktorymi przechodzi kazdy pracownik
 
+        self.P = []  # wektor posprzatanych ulic
 
     def route_lengths(self, L : np.array):
         route_lengths_list = []
@@ -24,3 +25,6 @@ class Workers :
                 route_lengths_list[idx] += L[tuple(current_street)]
             idx += 1
         return route_lengths_list
+
+    def reset_P(self):
+        self.P = []

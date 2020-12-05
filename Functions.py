@@ -38,17 +38,17 @@ def initialize(workers,streets): # inicjalizacja pierwszego rozwiazania
     i = 0
     for j in range(0, workers.m):
         workers.trasy.append([])
-    while len(streets.P)< streets.r: #dopóki każda ulica nie będzie w P
+    while len(workers.P)< streets.r: #dopóki każda ulica nie będzie w P
         for j in range (0,workers.m): #iterujemy po pracownikach
             if i != 0:
                 i = int(workers.trasy[j][-1][1])
-            next_node = finding_next_poit_init(i, streets.n, streets.P, streets.A)#szukamy następnej ulicy, takej która jeszcze nie została posprzątana
+            next_node = finding_next_poit_init(i, streets.n, workers.P, streets.A)#szukamy następnej ulicy, takej która jeszcze nie została posprzątana
 
             if next_node != -1:
                 workers.trasy[j].append([i, next_node])  #dodajemy ulicę do trasy i rozwiąznia
-                streets.P.append([i, next_node])
+                workers.P.append([i, next_node])
             else:
-                next_node = finding_next_poit_init_already_cleaned(i, streets.n, streets.P, streets.A)#szukamy następnej ulicy, jakielkolwiek
+                next_node = finding_next_poit_init_already_cleaned(i, streets.n, workers.P, streets.A)#szukamy następnej ulicy, jakielkolwiek
                 workers.trasy[j].append([i, next_node]) #dodajemy ulicę do trasy
         i = 1
     for j in range(0, workers.m):
@@ -56,8 +56,8 @@ def initialize(workers,streets): # inicjalizacja pierwszego rozwiazania
     return workers.trasy
 
 
-def is_allowed(streets: Street.Streets ): #s sprawdza czy dana mutacja jest dozwolona (czy wszystkie ulice sa posprzatane
-    if len(streets.P) == streets.r:
+def is_allowed(r : int, test_P : list ): #s sprawdza czy dana mutacja jest dozwolona (czy wszystkie ulice sa posprzatane
+    if len(test_P) == r:
         return True
     else:
         return False
@@ -121,7 +121,11 @@ def adjacent_solution(workers : Worker.Workers, streets : Street.Streets): # mut
         chosen_nodes_list[1])  # znalezienie indeksu miejsca w ktorym trasa konczy sie zemieniac
         mutated_path = []
         mutated_path = reconstruct_path(streets.fw_graph, starting_node, finishing_node, mutated_path)  # uzyskanie zmienionej trasy miedzy dwoma punktami
-        workers.trasy[chosen_worker] = workers.trasy[chosen_worker][:chosen_node_idx1] + mutated_path + workers.trasy[chosen_worker][chosen_node_idx2 + 1:]  # zmiana rozwiazania
+        new_path = workers.trasy[chosen_worker][:chosen_node_idx1] + mutated_path + workers.trasy[chosen_worker][chosen_node_idx2 + 1:]
+        test_P = create_new_P(workers.trasy, new_path, chosen_worker)
+        if is_allowed(streets.r, test_P):
+            workers.trasy[chosen_worker] = new_path
+        else:
     elif chosen_type == 2:
         chosen_worker = random.randrange(0, workers.m)  # wybor losowego pracownika
         for street in chosen_worker:
@@ -144,13 +148,25 @@ def adjacent_solution(workers : Worker.Workers, streets : Street.Streets): # mut
         workers.trasy[most_efficient_worker] = workers.trasy[longest_route_idx]
         workers.trasy[longest_route_idx] = temp
 
+def create_new_P(trasy : list, new_path : list, path_idx :int):
+    new_P = []
+    idx = 0
+    for current_worker in trasy:
+        if idx == path_idx:
+            current_worker = new_path
+        for current_street in current_worker:
+            if current_street not in new_P and current_street.reversed() not in new_P:
+                new_P.append(current_street)
+
+    return new_P
+
 def fix  (streets: Street.Streets, workers : Worker.Workers):
     x, y = np.nonzero(np.triu(streets.A))
     omitted_streets = []
     route_lengths_list = workers.route_lengths(streets.L)
     min_index = route_lengths_list.index(min(route_lengths_list))
     for idx in range(0,len(x)):
-        if [x[idx],y[idx]] or [y[idx],x[idx]] not in streets.P:
+        if [x[idx],y[idx]] or [y[idx],x[idx]] not in workers.P:
             omitted_streets.append([x[idx],y[idx]])
     for idx in range (0,len(omitted_streets)):
         for jdx in range (0, len(workers.trasy[min_index])):

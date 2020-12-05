@@ -35,8 +35,6 @@ class Streets:
 
         self.r = np.sum(np.triu(self.A, 1))  # liczba ulic
 
-        self.P = []  # wektor posprzatanych ulic
-
         self.fw_graph = self.Floyd_Warshall()
 
 
@@ -63,9 +61,6 @@ class Streets:
         g_matrix = u_g_matrix + l_g_matrix
         new_G = np.multiply(self.A, g_matrix)
         return new_G
-
-    def reset_P(self):
-        self.P = []
 
     def Floyd_Warshall(self):  # Floyd-Warshall lub djikstra z BFS
         # Floyd z opensourca,
