@@ -125,7 +125,7 @@ def adjacent_solution(workers : Worker.Workers, streets : Street.Streets): # mut
         test_P = create_new_P(workers.trasy, new_path, chosen_worker)
         if is_allowed(streets.r, test_P):
             workers.trasy[chosen_worker] = new_path
-        else:
+        #else:
     elif chosen_type == 2:
         chosen_worker = random.randrange(0, workers.m)  # wybor losowego pracownika
         for street in chosen_worker:
@@ -160,19 +160,39 @@ def create_new_P(trasy : list, new_path : list, path_idx :int):
 
     return new_P
 
-def fix  (streets: Street.Streets, workers : Worker.Workers):
+def fix  (streets: Street.Streets, new_workers : Worker.Workers):
     x, y = np.nonzero(np.triu(streets.A))
     omitted_streets = []
-    route_lengths_list = workers.route_lengths(streets.L)
-    min_index = route_lengths_list.index(min(route_lengths_list))
+    route_lengths_list = new_workers.route_lengths(streets.L)
+    route_lengths_list_copy = route_lengths_list[:]
+    temp_flag = False
+    licz = 0
+    path_size = len(new_workers.P)
     for idx in range(0,len(x)):
         if [x[idx],y[idx]] or [y[idx],x[idx]] not in workers.P:
             omitted_streets.append([x[idx],y[idx]])
     for idx in range (0,len(omitted_streets)):
-        for jdx in range (0, len(workers.trasy[min_index])):
-            if x(idx) or y(idx) in workers.trasy[min_index][jdx]:
+        licz = licz + 1
+        temp_flag = False
+        min_index = route_lengths_list.index(min(route_lengths_list))
+        while len(new_workers.P) < path_size + licz:
+            if temp_flag:
+                route_lengths_list_copy[min_index] = 21370000
+                min_index = route_lengths_list_copy.index(min(route_lengths_list_copy))
+            for jdx in range (0, len(workers.trasy[min_index])):
+                if x[idx] or y[idx] in workers.trasy[min_index][jdx]:
+                    new_workers.P.append([x[idx],y[idx]])
+                    new_workers.trasy[min_index] = fix_add_street(new_workers.trasy[min_index],x[idx],y[idx],jdx)
+                    temp_flag = True
+                    break
 
-    pass
 
 
-print((np.nonzero(np.triu(streets.A))))
+def fix_add_street(trasa,x,y,jdx):
+    front_half = trasa[:jdx]
+    back_half = trasa[jdx+1:]
+    if trasa[jdx][0] == x:
+        trasa = front_half + [x,y] + back_half
+    else:
+        trasa = front_half + [y, x] + back_half
+    return trasa
