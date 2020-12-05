@@ -143,6 +143,7 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
         route_length_list = []
         idx = 0
         for current_worker in chosen_workers_list:
+            route_length_list.append(0)
             for current_street in current_worker:
                 route_length_list[idx] += streets.L[tuple(current_street)]
             idx += 1
