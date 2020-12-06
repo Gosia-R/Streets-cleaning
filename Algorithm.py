@@ -5,7 +5,7 @@ import Worker
 import Functions
 import random
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 '''
 sama algorytm, wszystkie funkcje w osobnym pliku
@@ -26,12 +26,13 @@ while temperature > 1:
 
     new_cost = Functions.calculate_cost(new_workers, streets)
     cost_list.append(new_cost)
+    print(new_cost)
     delta = current_cost - new_cost
 
-    if delta > 0:
+    if delta < 0:
         workers = new_workers
     else:
-        beta = 100
+        beta = 1
         if random.random() < np.exp(-(beta * delta) / temperature):
             workers = new_workers
         else:
@@ -39,5 +40,5 @@ while temperature > 1:
 
     temperature *= alfa
 
-plt.plot(cost_list)
-plt.show()
+#plt.plot(cost_list)
+#plt.show()

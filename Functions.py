@@ -132,7 +132,7 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
         chosen_worker = random.randrange(0, new_worker.m)  # wybor losowego pracownika
         for street in new_worker.trasy[chosen_worker]:
             street_idx = new_worker.trasy[chosen_worker].index(street)
-            new_worker.trasy[chosen_worker][street_idx] = new_worker.trasy[chosen_worker][street_idx].reverse()
+            new_worker.trasy[chosen_worker][street_idx].reverse()
         new_worker.trasy[chosen_worker] = new_worker.trasy[chosen_worker].reverse()  # pracownik przechodzi trase w inna strone
     elif chosen_type == 3:  # para pracownikow zamienia trasy
         chosen_workers_list = random.choices(new_worker.trasy, k=3)
@@ -176,12 +176,15 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
     for idx in range(0,len(x)):
         if [x[idx],y[idx]] or [y[idx],x[idx]] not in workers.P:
             omitted_streets.append([x[idx],y[idx]])
-    for idx in range (0,len(omitted_streets)):
+    for idx in range(0, len(omitted_streets)):
         licz = licz + 1
         temp_flag = False
+        route_lengths_list = new_workers.route_lengths(streets.L)
         min_index = route_lengths_list.index(min(route_lengths_list))
+        if len(new_workers.P) < path_size + licz:
+            break
         while len(new_workers.P) < path_size + licz:
-            if  temp_flag:
+            if temp_flag:
                 print(route_lengths_list_copy[min_index])
                 route_lengths_list_copy[min_index] = 2138764
                 min_index = route_lengths_list_copy.index(min(route_lengths_list_copy))
@@ -201,7 +204,7 @@ def fix_add_street(trasa,x,y,jdx):
     front_half = trasa[:jdx]
     back_half = trasa[jdx+1:]
     if trasa[jdx][0] == x:
-        trasa = front_half + [[x,y]] + back_half
+        trasa = front_half + [[x,y]] + [[y,x]] + back_half
     else:
-        trasa = front_half + [[y,x]] + back_half
+        trasa = front_half + [[y,x]] +[[x,y]] +  back_half
     return trasa
