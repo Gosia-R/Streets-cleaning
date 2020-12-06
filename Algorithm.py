@@ -38,13 +38,13 @@ while temperature > 1:
     delta_list.append(delta)
     temp_list.append(temperature)
     if delta >= 0:
-        workers = new_workers
-        current_cost = new_cost
+        workers = deepcopy(new_workers)
+        current_cost = deepcopy(new_cost)
     else:
         beta = 10
         if random.random() < np.exp((beta * delta) / temperature):
-            workers = new_workers
-            current_cost = new_cost
+            workers = deepcopy(new_workers)
+            current_cost = deepcopy(new_cost)
             delta_accepted_list.append(delta)
         else:
             idx += 1

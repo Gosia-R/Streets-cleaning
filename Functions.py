@@ -4,6 +4,7 @@ import numpy as np
 import Worker
 import Street
 import random
+from copy import deepcopy
 
 #Stworzenie obiektów będzie pomagać
 workers = Worker.Workers()
@@ -112,12 +113,14 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
     chosen_type = random.choices(population=[1, 2, 3], weights=[45, 55 / 2, 55 / 2], k=1)  # rozne mutacje maja rozne prawdopodobienstwa
     chosen_type = chosen_type[0]
 
+    chosen_type = 1
+
     if chosen_type == 1:  # zmiana ścieżki
         chosen_worker = random.randrange(0, new_worker.m)  # wybor losowego pracownika
         chosen_nodes_list = random.choices(new_worker.trasy[chosen_worker], k=2)  # wybor dwoch losowych skrzyzowan
-        starting_node, temp1 = chosen_nodes_list[0]  # pozyskanie punktu startowego
+        temp1, starting_node = chosen_nodes_list[0]  # pozyskanie punktu startowego
         chosen_node_idx1 = new_worker.trasy[chosen_worker].index(chosen_nodes_list[0])  # znalezienie indeksu miejsca w ktorym trasa zaczyna sie zmieniac
-        temp2, finishing_node = chosen_nodes_list[1]  # pozyskanie punku koncowego
+        finishing_node, temp2 = chosen_nodes_list[1]  # pozyskanie punku koncowego
         chosen_node_idx2 = new_worker.trasy[chosen_worker].index(
         chosen_nodes_list[1])  # znalezienie indeksu miejsca w ktorym trasa konczy sie zemieniac
         mutated_path = []
@@ -125,9 +128,7 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
         new_path = new_worker.trasy[chosen_worker][:chosen_node_idx1] + mutated_path + new_worker.trasy[chosen_worker][chosen_node_idx2 + 1:]
         new_worker.P = create_new_P(new_worker.trasy, new_path, chosen_worker)
         new_worker.trasy[chosen_worker] = new_path
-        if is_allowed(streets.r, new_worker.P):
-            new_worker.trasy[chosen_worker] = new_path
-        else:
+        if not is_allowed(streets.r, new_worker.P):
             fix(streets, new_worker)
     elif chosen_type == 2:
         chosen_worker = random.randrange(0, new_worker.m)  # wybor losowego pracownika
@@ -160,7 +161,8 @@ def create_new_P(trasy : list, new_path : list, path_idx :int):
         if idx == path_idx:
             current_worker = new_path
         for current_street in current_worker:
-            if current_street not in new_P and current_street.reverse() not in new_P:
+            start, end = current_street
+            if ([start,end]) not in new_P and ([end,start]) not in new_P:
                 new_P.append(current_street)
 
     return new_P
@@ -208,3 +210,15 @@ def fix_add_street(trasa,x,y,jdx):
     else:
         trasa = front_half + [[y,x]] +[[x,y]] +  back_half
     return trasa
+
+'''
+initialize(workers, streets)
+test_worker = deepcopy(workers)
+adjacent_solution(test_worker, streets)
+adjacent_solution(test_worker, streets)
+adjacent_solution(test_worker, streets)
+adjacent_solution(test_worker, streets)
+adjacent_solution(test_worker, streets)
+adjacent_solution(test_worker, streets)
+print('nkdfs')
+'''
