@@ -12,7 +12,7 @@ from copy import deepcopy
 sama algorytm, wszystkie funkcje w osobnym pliku
 '''
 
-temperature = 30000
+temperature = 3000
 alfa = 0.99
 workers = Worker.Workers()
 streets = Street.Streets()
@@ -22,8 +22,12 @@ current_cost = Functions.calculate_cost(workers, streets)
 cost_list = [current_cost]
 delta_list = []
 iteration = 0
+idx = 0
+iter_list = []
+temp_list = []
 exp_list = []
-
+delta_accepted_list = []
+delta_rejected_list = []
 while temperature > 1:
     new_workers = deepcopy(workers)
     Functions.adjacent_solution(new_workers, streets)
@@ -32,21 +36,31 @@ while temperature > 1:
     cost_list.append(new_cost)
     delta = current_cost - new_cost
     delta_list.append(delta)
-    if delta > 0:
+    temp_list.append(temperature)
+    if delta >= 0:
         workers = new_workers
         current_cost = new_cost
     else:
-        beta = 1
-        exp_list.append(np.exp(-(beta * delta) / temperature))
-        if random.random() < np.exp(-(beta * delta) / temperature):
+        beta = 10
+        if random.random() < np.exp((beta * delta) / temperature):
             workers = new_workers
             current_cost = new_cost
+            delta_accepted_list.append(delta)
         else:
+            idx += 1
+            #print('nie zaakceptowano po raz : ', idx, ' w iteracji nr :', iteration)
+            iter_list.append(iteration)
+            delta_rejected_list.append(delta)
             pass
 
     print('iteracja = ', iteration, 'koszt = ', current_cost)
     iteration += 1
     temperature *= alfa
+
+
+plt.plot(iter_list, 'ro')
+plt.show()
+
 
 plt.plot(cost_list)
 plt.ylabel('time [mimutes]')
@@ -57,6 +71,15 @@ plt.plot(delta_list)
 plt.title('Delta')
 plt.show()
 
-plt.plot(exp_list)
-plt.title('exp')
+plt.plot(temp_list)
+plt.title('temperatura')
+plt.show()
+
+ax = plt.subplot(211)
+ax.plot(delta_accepted_list, 'o')
+ax.set_title('accepted')
+
+ax2 = plt.subplot(212)
+ax2.plot(delta_rejected_list, 'o')
+ax2.set_title('rejected')
 plt.show()

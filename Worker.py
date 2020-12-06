@@ -11,7 +11,7 @@ class Workers :
     def __init__(self):
         self.m = 8 # ilosc pracownikow
 
-        self.w = [10, 10, 30, 15, 20, 20, 30, 40, 35]
+        self.w = [10, 10, 10, 10, 10, 10, 90, 10, 10]
 
         self.trasy = [] # wektor zawierajacy kolejno ulice (para wierzcholkow) ktorymi przechodzi kazdy pracownik
 
