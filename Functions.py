@@ -41,7 +41,7 @@ def initialize(workers,streets): # inicjalizacja pierwszego rozwiazania
         workers.trasy.append([])
     while len(workers.P)< streets.r: #dopóki każda ulica nie będzie w P
         for j in range (0,workers.m): #iterujemy po pracownikach
-            if i != 0:
+            if len(workers.trasy[j])!=0:
                 i = int(workers.trasy[j][-1][1])
             next_node = finding_next_poit_init(i, streets.n, workers.P, streets.A)#szukamy następnej ulicy, takej która jeszcze nie została posprzątana
 
