@@ -118,11 +118,18 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
     if chosen_type == 1:  # zmiana ścieżki
         chosen_worker = random.randrange(0, new_worker.m)  # wybor losowego pracownika
         chosen_nodes_list = random.choices(new_worker.trasy[chosen_worker], k=2)  # wybor dwoch losowych skrzyzowan
-        temp1, starting_node = chosen_nodes_list[0]  # pozyskanie punktu startowego
         chosen_node_idx1 = new_worker.trasy[chosen_worker].index(chosen_nodes_list[0])  # znalezienie indeksu miejsca w ktorym trasa zaczyna sie zmieniac
-        finishing_node, temp2 = chosen_nodes_list[1]  # pozyskanie punku koncowego
         chosen_node_idx2 = new_worker.trasy[chosen_worker].index(
-        chosen_nodes_list[1])  # znalezienie indeksu miejsca w ktorym trasa konczy sie zemieniac
+            chosen_nodes_list[1])  # znalezienie indeksu miejsca w ktorym trasa konczy sie zemieniac
+        if chosen_node_idx1 > chosen_node_idx2:
+            temp = chosen_nodes_list[0]
+            chosen_nodes_list[0] = chosen_nodes_list[1]
+            chosen_nodes_list[1] = temp
+            temp = chosen_node_idx1
+            chosen_node_idx1 = chosen_node_idx2
+            chosen_node_idx2 = temp
+        temp1, starting_node = chosen_nodes_list[0]  # pozyskanie punktu startowego
+        finishing_node, temp2 = chosen_nodes_list[1]  # pozyskanie punku koncowego
         mutated_path = []
         mutated_path = reconstruct_path(streets.fw_graph, starting_node, finishing_node, mutated_path)  # uzyskanie zmienionej trasy miedzy dwoma punktami
         new_path = new_worker.trasy[chosen_worker][:chosen_node_idx1] + mutated_path + new_worker.trasy[chosen_worker][chosen_node_idx2 + 1:]
