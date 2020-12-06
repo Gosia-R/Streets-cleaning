@@ -113,7 +113,7 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
     chosen_type = random.choices(population=[1, 2, 3], weights=[45, 55 / 2, 55 / 2], k=1)  # rozne mutacje maja rozne prawdopodobienstwa
     chosen_type = chosen_type[0]
 
-    chosen_type = 1
+
 
     if chosen_type == 1:  # zmiana ścieżki
         chosen_worker = random.randrange(0, new_worker.m)  # wybor losowego pracownika
@@ -181,21 +181,18 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
     route_lengths_list = new_workers.route_lengths(streets.L)
     route_lengths_list_copy = route_lengths_list[:]
     temp_flag = True
-    licz = 0
     path_size = len(new_workers.P)
     for idx in range(0,len(x)):
         if [x[idx],y[idx]] or [y[idx],x[idx]] not in workers.P:
             omitted_streets.append([x[idx],y[idx]])
     for idx in range(0, len(omitted_streets)):
-        licz = licz + 1
         temp_flag = False
         route_lengths_list = new_workers.route_lengths(streets.L)
         min_index = route_lengths_list.index(min(route_lengths_list))
-        if len(new_workers.P) < path_size + licz:
+        if len(new_workers.P) == path_size + len(omitted_streets):
             break
-        while len(new_workers.P) < path_size + licz:
+        while len(new_workers.P) < path_size + len(omitted_streets):
             if temp_flag:
-                print(route_lengths_list_copy[min_index])
                 route_lengths_list_copy[min_index] = 2138764
                 min_index = route_lengths_list_copy.index(min(route_lengths_list_copy))
             for jdx in range(len(new_workers.trasy[min_index])):
