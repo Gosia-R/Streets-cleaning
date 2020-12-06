@@ -34,7 +34,7 @@ class Streets:
                            [0, 0, 3, 0, 3],
                            [0, 2, 1, 3, 0]])
         '''
-        self.n = 30
+        self.n = 40
 
         self.A = self.generate_new_A()
 

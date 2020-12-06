@@ -124,6 +124,7 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
         mutated_path = reconstruct_path(streets.fw_graph, starting_node, finishing_node, mutated_path)  # uzyskanie zmienionej trasy miedzy dwoma punktami
         new_path = new_worker.trasy[chosen_worker][:chosen_node_idx1] + mutated_path + new_worker.trasy[chosen_worker][chosen_node_idx2 + 1:]
         new_worker.P = create_new_P(new_worker.trasy, new_path, chosen_worker)
+        new_worker.trasy[chosen_worker] = new_path
         if is_allowed(streets.r, new_worker.P):
             new_worker.trasy[chosen_worker] = new_path
         else:
@@ -133,7 +134,7 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
         for street in new_worker.trasy[chosen_worker]:
             street_idx = new_worker.trasy[chosen_worker].index(street)
             new_worker.trasy[chosen_worker][street_idx].reverse()
-        new_worker.trasy[chosen_worker] = new_worker.trasy[chosen_worker].reverse()  # pracownik przechodzi trase w inna strone
+        new_worker.trasy[chosen_worker].reverse()  # pracownik przechodzi trase w inna strone
     elif chosen_type == 3:  # para pracownikow zamienia trasy
         chosen_workers_list = random.choices(new_worker.trasy, k=3)
         chosen_worker_idx1 = new_worker.trasy.index(chosen_workers_list[0])
@@ -197,7 +198,6 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
                     new_workers.trasy[min_index] = fix_add_street(new_workers.trasy[min_index],int(x[idx]),int(y[idx]),jdx)
                     temp_flag = True
                     break
-
 
 
 def fix_add_street(trasa,x,y,jdx):
