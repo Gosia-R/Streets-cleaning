@@ -54,7 +54,7 @@ while temperature > 1:
 
     #print('iteracja = ', iteration, 'dlugosc P workera = ', len(workers.P), 'dlugosc P new_workera = ', len(new_workers.P))
     cost_list.append(current_cost)
-    #print('iteracja = ', iteration, 'koszt = ', current_cost)
+    print('iteracja = ', iteration, 'koszt = ', current_cost)
     iteration += 1
     temperature *= alfa
 

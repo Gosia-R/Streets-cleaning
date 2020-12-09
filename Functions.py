@@ -214,7 +214,7 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
                 idx = int(idx)
                 jdx = int(jdx)
                 min_index = int(min_index)
-                if (omitted_streets[idx][0]== new_workers.trasy[min_index][jdx][0])or(omitted_streets[idx][1] == new_workers.trasy[min_index][jdx][1]):
+                if (omitted_streets[idx][0]== new_workers.trasy[min_index][jdx][0])or(omitted_streets[idx][1] == new_workers.trasy[min_index][jdx][1])or(omitted_streets[idx][1]== new_workers.trasy[min_index][jdx][0])or(omitted_streets[idx][0] == new_workers.trasy[min_index][jdx][1]):
                     new_workers.P.append(omitted_streets[idx])
                     new_workers.trasy[min_index] = fix_add_street(new_workers.trasy[min_index],omitted_streets[idx][0],omitted_streets[idx][1],jdx)
                     temp_flag = True
@@ -228,19 +228,20 @@ def fix_add_street(trasa,x,y,jdx):
     back_half1 = trasa[jdx + 1:]
     if (trasa[jdx][0] == x)and (jdx!=0):
         trasa = front_half0 + [[x,y]] + [[y,x]] + back_half0
+        return trasa
     if (trasa[jdx][0] == x)and (jdx==0):
         trasa = [[x,y]] + [[y,x]] + trasa
+        return trasa
     if (trasa[jdx][0] == y)and (jdx==0):
         trasa = [[y,x]] +[[x,y]] + trasa
+        return trasa
     if(trasa[jdx][0] == y)and (jdx!=0):
         trasa = front_half0 + [[y,x]] +[[x,y]] +  back_half0
+        return trasa
     if (trasa[jdx][1] == x)and (jdx!=0):
         trasa = front_half1 + [[x,y]] + [[y,x]] + back_half1
-    if (trasa[jdx][1] == x)and (jdx==0):
-        trasa = [[x,y]] + [[y,x]] + trasa
-    if (trasa[jdx][1] == y)and (jdx==0):
-        trasa = [[y,x]] +[[x,y]] + trasa
+        return trasa
     if(trasa[jdx][1] == y)and (jdx!=0):
         trasa = front_half1 + [[y,x]] +[[x,y]] +  back_half1
-    return trasa
+        return trasa
 
