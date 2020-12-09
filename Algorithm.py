@@ -12,7 +12,7 @@ from copy import deepcopy
 sama algorytm, wszystkie funkcje w osobnym pliku
 '''
 
-temperature = 3000
+temperature = 1000
 alfa = 0.99
 workers = Worker.Workers()
 streets = Street.Streets()
@@ -40,7 +40,7 @@ while temperature > 1:
         workers = deepcopy(new_workers)
         current_cost = deepcopy(new_cost)
     else:
-        beta = 30
+        beta = 100
         if random.random() < np.exp((beta * delta) / temperature):
             workers = deepcopy(new_workers)
             current_cost = deepcopy(new_cost)

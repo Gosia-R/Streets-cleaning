@@ -234,10 +234,10 @@ def fix_add_street(trasa,x,y,jdx):
         trasa = [[y,x]] +[[x,y]] + trasa
         return trasa
     if (trasa[jdx][1] == x)and (jdx==0):
-        trasa = [[x,y]] + [[y,x]] + trasa
+        trasa = front_half1 + [[x, y]] + [[y, x]] + back_half1
         return trasa
     if (trasa[jdx][1] == y)and (jdx==0):
-        trasa = [[y,x]] +[[x,y]] + trasa
+        trasa = front_half1 + [[y, x]] + [[x, y]] + back_half1
         return trasa
     if (trasa[jdx][0] == x) and (jdx != 0):
         trasa = front_half0 + [[x, y]] + [[y, x]] + back_half0
