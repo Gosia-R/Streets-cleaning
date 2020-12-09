@@ -27,6 +27,7 @@ iter_list = []
 temp_list = []
 delta_accepted_list = []
 delta_rejected_list = []
+print('Zainicjowana dlugosc P = ', len(workers.P))
 while temperature > 1:
     new_workers = deepcopy(workers)
     Functions.adjacent_solution(new_workers, streets)
@@ -51,8 +52,9 @@ while temperature > 1:
             delta_rejected_list.append(delta)
             pass
 
+    #print('iteracja = ', iteration, 'dlugosc P workera = ', len(workers.P), 'dlugosc P new_workera = ', len(new_workers.P))
     cost_list.append(current_cost)
-    print('iteracja = ', iteration, 'koszt = ', current_cost)
+    #print('iteracja = ', iteration, 'koszt = ', current_cost)
     iteration += 1
     temperature *= alfa
 
