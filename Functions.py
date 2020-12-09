@@ -191,7 +191,6 @@ def create_new_P(trasy : list, new_path : list, path_idx :int):
 
 def fix  (streets: Street.Streets, new_workers : Worker.Workers):
     x, y = np.where(np.triu(streets.A))
-
     omitted_streets = []
     route_lengths_list = new_workers.route_lengths(streets.L)
     route_lengths_list_copy = route_lengths_list[:]
@@ -215,19 +214,33 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
                 idx = int(idx)
                 jdx = int(jdx)
                 min_index = int(min_index)
-                if (int(x[idx]) == new_workers.trasy[min_index][jdx][0])or(int(x[idx]) == new_workers.trasy[min_index][jdx][1]) or (int(y[idx]) == new_workers.trasy[min_index][jdx][1]) or (int(y[idx]) == new_workers.trasy[min_index][jdx][0]):
-                    new_workers.P.append([x[idx],y[idx]])
-                    new_workers.trasy[min_index] = fix_add_street(new_workers.trasy[min_index],int(x[idx]),int(y[idx]),jdx)
+                if (omitted_streets[idx][0]== new_workers.trasy[min_index][jdx][0])or(omitted_streets[idx][1] == new_workers.trasy[min_index][jdx][1]):
+                    new_workers.P.append(omitted_streets[idx])
+                    new_workers.trasy[min_index] = fix_add_street(new_workers.trasy[min_index],omitted_streets[idx][0],omitted_streets[idx][1],jdx)
                     temp_flag = True
                     break
 
 
 def fix_add_street(trasa,x,y,jdx):
-    front_half = trasa[:jdx]
-    back_half = trasa[jdx+1:]
-    if trasa[jdx][0] == x:
-        trasa = front_half + [[x,y]] + [[y,x]] + back_half
-    else:
-        trasa = front_half + [[y,x]] +[[x,y]] +  back_half
+    front_half0 = trasa[:jdx]
+    back_half0 = trasa[jdx:]
+    front_half1 = trasa[:jdx + 1]
+    back_half1 = trasa[jdx + 1:]
+    if (trasa[jdx][0] == x)and (jdx!=0):
+        trasa = front_half0 + [[x,y]] + [[y,x]] + back_half0
+    if (trasa[jdx][0] == x)and (jdx==0):
+        trasa = [[x,y]] + [[y,x]] + trasa
+    if (trasa[jdx][0] == y)and (jdx==0):
+        trasa = [[y,x]] +[[x,y]] + trasa
+    if(trasa[jdx][0] == y)and (jdx!=0):
+        trasa = front_half0 + [[y,x]] +[[x,y]] +  back_half0
+    if (trasa[jdx][1] == x)and (jdx!=0):
+        trasa = front_half1 + [[x,y]] + [[y,x]] + back_half1
+    if (trasa[jdx][1] == x)and (jdx==0):
+        trasa = [[x,y]] + [[y,x]] + trasa
+    if (trasa[jdx][1] == y)and (jdx==0):
+        trasa = [[y,x]] +[[x,y]] + trasa
+    if(trasa[jdx][1] == y)and (jdx!=0):
+        trasa = front_half1 + [[y,x]] +[[x,y]] +  back_half1
     return trasa
 
