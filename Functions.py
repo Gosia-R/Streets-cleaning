@@ -113,7 +113,7 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
     chosen_type = random.choices(population=[1, 2, 3], weights=[45, 55 / 2, 55 / 2], k=1)  # rozne mutacje maja rozne prawdopodobienstwa
     chosen_type = chosen_type[0]
 
-    chosen_type = 1
+
     if chosen_type == 1:  # zmiana ścieżki
 
         chosen_worker_idx = random.randrange(0, new_worker.m)  # wybor losowego pracownika
@@ -186,6 +186,7 @@ def create_new_P(trasy : list, new_path : list, path_idx :int):
             start, end = current_street
             if ([start,end]) not in new_P and ([end,start]) not in new_P:
                 new_P.append(current_street)
+        idx += 1
 
     return new_P
 
@@ -198,7 +199,7 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
     temp_flag = True
     path_size = len(new_workers.P)
     for idx in range(0,len(x)):
-        if [x[idx],y[idx]] or [y[idx],x[idx]] not in new_workers.P:
+        if ([x[idx],y[idx]] not in new_workers.P) and ([y[idx],x[idx]] not in new_workers.P):
             omitted_streets.append([x[idx],y[idx]])
     for idx in range(0, len(omitted_streets)):
         temp_flag = False
