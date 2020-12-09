@@ -201,7 +201,6 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
             omitted_streets.append([x[idx],y[idx]])
     while len(new_workers.P) < path_size + len(omitted_streets):
         for idx in range(0, len(omitted_streets)):
-            temp_flag = False
             route_lengths_list = new_workers.route_lengths(streets.L)
             min_index = route_lengths_list.index(min(route_lengths_list))
             if len(new_workers.P) == path_size + len(omitted_streets):
@@ -210,6 +209,7 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
             if temp_flag:
                 route_lengths_list_copy[min_index] = 2138764
                 min_index = route_lengths_list_copy.index(min(route_lengths_list_copy))
+                temp_flag = True
             for jdx in range(len(new_workers.trasy[min_index])):
                 idx = int(idx)
                 jdx = int(jdx)
@@ -217,8 +217,8 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
                 if (omitted_streets[idx][0]== new_workers.trasy[min_index][jdx][0])or(omitted_streets[idx][1] == new_workers.trasy[min_index][jdx][1])or(omitted_streets[idx][1]== new_workers.trasy[min_index][jdx][0])or(omitted_streets[idx][0] == new_workers.trasy[min_index][jdx][1]):
                     new_workers.P.append(omitted_streets[idx])
                     new_workers.trasy[min_index] = fix_add_street(new_workers.trasy[min_index],omitted_streets[idx][0],omitted_streets[idx][1],jdx)
-                    temp_flag = True
                     break
+                temp_flag = False
 
 
 def fix_add_street(trasa,x,y,jdx):
@@ -226,14 +226,21 @@ def fix_add_street(trasa,x,y,jdx):
     back_half0 = trasa[jdx:]
     front_half1 = trasa[:jdx + 1]
     back_half1 = trasa[jdx + 1:]
-    if (trasa[jdx][0] == x)and (jdx!=0):
-        trasa = front_half0 + [[x,y]] + [[y,x]] + back_half0
-        return trasa
+
     if (trasa[jdx][0] == x)and (jdx==0):
         trasa = [[x,y]] + [[y,x]] + trasa
         return trasa
     if (trasa[jdx][0] == y)and (jdx==0):
         trasa = [[y,x]] +[[x,y]] + trasa
+        return trasa
+    if (trasa[jdx][1] == x)and (jdx==0):
+        trasa = [[x,y]] + [[y,x]] + trasa
+        return trasa
+    if (trasa[jdx][1] == y)and (jdx==0):
+        trasa = [[y,x]] +[[x,y]] + trasa
+        return trasa
+    if (trasa[jdx][0] == x) and (jdx != 0):
+        trasa = front_half0 + [[x, y]] + [[y, x]] + back_half0
         return trasa
     if(trasa[jdx][0] == y)and (jdx!=0):
         trasa = front_half0 + [[y,x]] +[[x,y]] +  back_half0
@@ -244,4 +251,6 @@ def fix_add_street(trasa,x,y,jdx):
     if(trasa[jdx][1] == y)and (jdx!=0):
         trasa = front_half1 + [[y,x]] +[[x,y]] +  back_half1
         return trasa
+    else:
+        return [[1,1]]
 
