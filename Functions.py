@@ -129,7 +129,7 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
         if not is_allowed(streets.r, new_worker.P):
             fix(streets, new_worker)
 
-        '''
+
         chosen_worker = random.randrange(0, new_worker.m)  # wybor losowego pracownika
         chosen_nodes_list = random.choices(new_worker.trasy[chosen_worker], k=2)  # wybor dwoch losowych skrzyzowan
         chosen_node_idx1 = new_worker.trasy[chosen_worker].index(chosen_nodes_list[0])  # znalezienie indeksu miejsca w ktorym trasa zaczyna sie zmieniac
@@ -151,7 +151,6 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
         new_worker.trasy[chosen_worker] = new_path
         if not is_allowed(streets.r, new_worker.P):
             fix(streets, new_worker)
-        '''
     elif chosen_type == 2:
         chosen_worker = random.randrange(0, new_worker.m)  # wybor losowego pracownika
         for street in new_worker.trasy[chosen_worker]:
@@ -194,7 +193,6 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
     x, y = np.where(np.triu(streets.A))
 
     omitted_streets = []
-    print(omitted_streets)
     route_lengths_list = new_workers.route_lengths(streets.L)
     route_lengths_list_copy = route_lengths_list[:]
     temp_flag = True
@@ -202,14 +200,14 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
     for idx in range(0,len(x)):
         if ([x[idx],y[idx]] not in new_workers.P) and ([y[idx],x[idx]] not in new_workers.P):
             omitted_streets.append([x[idx],y[idx]])
-    print(omitted_streets)
-    for idx in range(0, len(omitted_streets)):
-        temp_flag = False
-        route_lengths_list = new_workers.route_lengths(streets.L)
-        min_index = route_lengths_list.index(min(route_lengths_list))
-        if len(new_workers.P) == path_size + len(omitted_streets):
-            break
-        while len(new_workers.P) < path_size + len(omitted_streets):
+    while len(new_workers.P) < path_size + len(omitted_streets):
+        for idx in range(0, len(omitted_streets)):
+            temp_flag = False
+            route_lengths_list = new_workers.route_lengths(streets.L)
+            min_index = route_lengths_list.index(min(route_lengths_list))
+            if len(new_workers.P) == path_size + len(omitted_streets):
+                break
+
             if temp_flag:
                 route_lengths_list_copy[min_index] = 2138764
                 min_index = route_lengths_list_copy.index(min(route_lengths_list_copy))

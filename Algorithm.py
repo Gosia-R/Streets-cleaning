@@ -40,7 +40,7 @@ while temperature > 1:
         workers = deepcopy(new_workers)
         current_cost = deepcopy(new_cost)
     else:
-        beta = 10
+        beta = 30
         if random.random() < np.exp((beta * delta) / temperature):
             workers = deepcopy(new_workers)
             current_cost = deepcopy(new_cost)
