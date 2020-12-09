@@ -25,7 +25,6 @@ iteration = 0
 idx = 0
 iter_list = []
 temp_list = []
-exp_list = []
 delta_accepted_list = []
 delta_rejected_list = []
 while temperature > 1:
@@ -33,7 +32,6 @@ while temperature > 1:
     Functions.adjacent_solution(new_workers, streets)
 
     new_cost = Functions.calculate_cost(new_workers, streets)
-    cost_list.append(new_cost)
     delta = current_cost - new_cost
     delta_list.append(delta)
     temp_list.append(temperature)
@@ -53,6 +51,7 @@ while temperature > 1:
             delta_rejected_list.append(delta)
             pass
 
+    cost_list.append(current_cost)
     print('iteracja = ', iteration, 'koszt = ', current_cost)
     iteration += 1
     temperature *= alfa
