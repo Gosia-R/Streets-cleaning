@@ -113,44 +113,39 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
     chosen_type = random.choices(population=[1, 2, 3], weights=[45, 55 / 2, 55 / 2], k=1)  # rozne mutacje maja rozne prawdopodobienstwa
     chosen_type = chosen_type[0]
 
-
+    #print('przed mutacja = ', len(new_worker.P))
+    gucci = False
     if chosen_type == 1:  # zmiana ścieżki
 
-        chosen_worker_idx = random.randrange(0, new_worker.m)  # wybor losowego pracownika
-        chosen_node_idx1 = random.randrange(15, len(new_worker.trasy[chosen_worker_idx])-5)
-        chosen_node_idx2 = random.randrange(2, 4) + chosen_node_idx1
-        temp1, starting_node = new_worker.trasy[chosen_worker_idx][chosen_node_idx1]
-        finishing_node, temp2 = new_worker.trasy[chosen_worker_idx][chosen_node_idx2]
-        mutated_path = []
-        mutated_path = reconstruct_path(streets.fw_graph, starting_node, finishing_node, mutated_path)
-        new_path = new_worker.trasy[chosen_worker_idx][:chosen_node_idx1+1] + mutated_path + new_worker.trasy[chosen_worker_idx][chosen_node_idx2:]
-        new_worker.P = create_new_P(new_worker.trasy, new_path, chosen_worker_idx)
-        new_worker.trasy[chosen_worker_idx] = new_path
-        if not is_allowed(streets.r, new_worker.P):
-            fix(streets, new_worker)
+        while not gucci:
+            chosen_worker_idx = random.randrange(0, new_worker.m)  # wybor losowego pracownika
+            chosen_node_idx1 = random.randrange(15, len(new_worker.trasy[chosen_worker_idx])-6)
+            chosen_node_idx2 = random.randrange(3, 5) + chosen_node_idx1
+            temp1, starting_node = new_worker.trasy[chosen_worker_idx][chosen_node_idx1]
+            finishing_node, temp2 = new_worker.trasy[chosen_worker_idx][chosen_node_idx2]
+            mutated_path = []
+            mutated_path = reconstruct_path(streets.fw_graph, starting_node, finishing_node, mutated_path)
+            new_path = new_worker.trasy[chosen_worker_idx][:chosen_node_idx1+1] + mutated_path + new_worker.trasy[chosen_worker_idx][chosen_node_idx2:]
+            #print('w trakcie mutacji = ', len(new_worker.P))
 
+            new_P = create_new_P(new_worker.trasy, new_path, chosen_worker_idx)
+            '''
+            new_worker.trasy[chosen_worker_idx] = new_path
+            noweP = newP(new_worker.trasy)
+            new_worker.P = noweP
+            '''
+            #print('przed fixem = ', len(new_worker.P))
+            '''    
+            if not is_allowed(streets.r, new_worker.P):
+                fix(streets, new_worker)
+            '''
+            if is_allowed(streets.r, new_P):
+                new_worker.trasy[chosen_worker_idx] = new_path
+                new_worker.P = new_P
+                gucci = True
 
-        chosen_worker = random.randrange(0, new_worker.m)  # wybor losowego pracownika
-        chosen_nodes_list = random.choices(new_worker.trasy[chosen_worker], k=2)  # wybor dwoch losowych skrzyzowan
-        chosen_node_idx1 = new_worker.trasy[chosen_worker].index(chosen_nodes_list[0])  # znalezienie indeksu miejsca w ktorym trasa zaczyna sie zmieniac
-        chosen_node_idx2 = new_worker.trasy[chosen_worker].index(
-            chosen_nodes_list[1])  # znalezienie indeksu miejsca w ktorym trasa konczy sie zemieniac
-        if chosen_node_idx1 > chosen_node_idx2:
-            temp = chosen_nodes_list[0]
-            chosen_nodes_list[0] = chosen_nodes_list[1]
-            chosen_nodes_list[1] = temp
-            temp = chosen_node_idx1
-            chosen_node_idx1 = chosen_node_idx2
-            chosen_node_idx2 = temp
-        temp1, starting_node = chosen_nodes_list[0]  # pozyskanie punktu startowego
-        finishing_node, temp2 = chosen_nodes_list[1]  # pozyskanie punku koncowego
-        mutated_path = []
-        mutated_path = reconstruct_path(streets.fw_graph, starting_node, finishing_node, mutated_path)  # uzyskanie zmienionej trasy miedzy dwoma punktami
-        new_path = new_worker.trasy[chosen_worker][:chosen_node_idx1] + mutated_path + new_worker.trasy[chosen_worker][chosen_node_idx2 + 1:]
-        new_worker.P = create_new_P(new_worker.trasy, new_path, chosen_worker)
-        new_worker.trasy[chosen_worker] = new_path
-        if not is_allowed(streets.r, new_worker.P):
-            fix(streets, new_worker)
+            #print('po fixie = ', len(new_worker.P))
+
     elif chosen_type == 2:
         chosen_worker = random.randrange(0, new_worker.m)  # wybor losowego pracownika
         for street in new_worker.trasy[chosen_worker]:
@@ -188,6 +183,21 @@ def create_new_P(trasy : list, new_path : list, path_idx :int):
         idx += 1
 
     return new_P
+
+
+
+#__________________________________________________________________________________
+# Funkcje poki co nie uzywane
+
+
+def newP(trasy : list):
+    newP = []
+    for current_worker in trasy:
+        for current_street in current_worker:
+            start, end = current_street
+            if ([start, end] not in newP) and ([end, start] not in newP):
+                newP.append(current_street)
+    return newP
 
 def fix  (streets: Street.Streets, new_workers : Worker.Workers):
     x, y = np.where(np.triu(streets.A))
