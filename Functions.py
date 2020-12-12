@@ -119,9 +119,8 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
 
         while not gucci:
             chosen_worker_idx = random.randrange(0, new_worker.m)  # wybor losowego pracownika
-            #chosen_node_idx1 = random.randrange(0, len(new_worker.trasy[chosen_worker_idx])-6)
-            chosen_node_idx1 = random.randrange(0, 3)
-            chosen_node_idx2 = random.randrange(3, 4) + chosen_node_idx1
+            chosen_node_idx1 = random.randrange(2, len(new_worker.trasy[chosen_worker_idx])-6)
+            chosen_node_idx2 = random.randrange(3, 5) + chosen_node_idx1
             temp1, starting_node = new_worker.trasy[chosen_worker_idx][chosen_node_idx1]
             finishing_node, temp2 = new_worker.trasy[chosen_worker_idx][chosen_node_idx2]
             mutated_path = []
