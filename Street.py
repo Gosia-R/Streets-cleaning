@@ -16,11 +16,14 @@ class Streets:
         '''
         self.n = 5  # liczba skrzyzowan
 
-        self.A = np.array([[0, 1, 1, 0, 0],  # macierz polaczen pomiedzy skrzyzowaniami
-                           [1, 0, 0, 0, 1],
-                           [1, 0, 0, 1, 1],
-                           [0, 0, 1, 0, 1],
-                           [0, 1, 1, 1, 0]])
+        self.A = np.array([[0, 1, 1, 1, 1, 0, 1, 0]
+                         [1, 0, 1, 0, 0, 0, 1, 0]
+                         [1, 1, 0, 1, 0, 1, 1, 0]
+                         [1, 0, 1, 0, 1, 0, 0, 1]
+                         [1, 0, 0, 1, 0, 1, 0, 0]
+                         [0, 0, 1, 0, 1, 0, 1, 1]
+                         [1, 1, 1, 0, 0, 1, 0, 1]
+                         [0, 0, 0, 1, 0, 1, 1, 0]])
 
         self.L = np.array([[0, 55, 18, 0, 0],  # macierz odleglosci pomiedzy skrzyzowaniami
                            [55, 0, 0, 0, 74],
@@ -34,9 +37,16 @@ class Streets:
                            [0, 0, 3, 0, 3],
                            [0, 2, 1, 3, 0]])
         '''
-        self.n = 40
+        self.n = 8
 
-        self.A = self.generate_new_A()
+        self.A = np.array([[0, 1, 1, 1, 1, 0, 1, 0],
+                         [1, 0, 1, 0, 0, 0, 1, 0],
+                         [1, 1, 0, 1, 0, 1, 1, 0],
+                         [1, 0, 1, 0, 1, 0, 0, 1],
+                         [1, 0, 0, 1, 0, 1, 0, 0],
+                         [0, 0, 1, 0, 1, 0, 1, 1],
+                         [1, 1, 1, 0, 0, 1, 0, 1],
+                         [0, 0, 0, 1, 0, 1, 1, 0]])
 
         self.L = self.generate_new_L(10, 80)
 

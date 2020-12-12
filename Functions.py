@@ -119,8 +119,9 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
 
         while not gucci:
             chosen_worker_idx = random.randrange(0, new_worker.m)  # wybor losowego pracownika
-            chosen_node_idx1 = random.randrange(15, len(new_worker.trasy[chosen_worker_idx])-6)
-            chosen_node_idx2 = random.randrange(3, 5) + chosen_node_idx1
+            #chosen_node_idx1 = random.randrange(0, len(new_worker.trasy[chosen_worker_idx])-6)
+            chosen_node_idx1 = random.randrange(0, 3)
+            chosen_node_idx2 = random.randrange(3, 4) + chosen_node_idx1
             temp1, starting_node = new_worker.trasy[chosen_worker_idx][chosen_node_idx1]
             finishing_node, temp2 = new_worker.trasy[chosen_worker_idx][chosen_node_idx2]
             mutated_path = []
@@ -135,9 +136,12 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
             new_worker.P = noweP
             '''
             #print('przed fixem = ', len(new_worker.P))
-            '''    
+            '''
+            new_worker.trasy[chosen_worker_idx] = new_path
+            new_worker.P = new_P
             if not is_allowed(streets.r, new_worker.P):
                 fix(streets, new_worker)
+                gucci = True
             '''
             if is_allowed(streets.r, new_P):
                 new_worker.trasy[chosen_worker_idx] = new_path
@@ -212,13 +216,13 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
     while len(new_workers.P) < path_size + len(omitted_streets):
         for idx in range(0, len(omitted_streets)):
             route_lengths_list = new_workers.route_lengths(streets.L)
-            min_index = route_lengths_list.index(min(route_lengths_list))
+            min_index = route_lengths_list.index(max(route_lengths_list))
             if len(new_workers.P) == path_size + len(omitted_streets):
                 break
 
             if temp_flag:
-                route_lengths_list_copy[min_index] = 2138764
-                min_index = route_lengths_list_copy.index(min(route_lengths_list_copy))
+                route_lengths_list_copy[min_index] = -1
+                min_index = route_lengths_list_copy.index(max(route_lengths_list_copy))
                 temp_flag = True
             for jdx in range(len(new_workers.trasy[min_index])):
                 idx = int(idx)
