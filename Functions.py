@@ -91,6 +91,7 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
     chosen_type = random.choices(population=[1, 2, 3], weights=[45, 55 / 2, 55 / 2], k=1)  # rozne mutacje maja rozne prawdopodobienstwa
     chosen_type = chosen_type[0]
 
+    P_first = deepcopy(new_worker.P)
     print('przed mutacja = ', len(new_worker.P))
     gucci = False
     if chosen_type == 1:  # zmiana ścieżki
@@ -103,6 +104,7 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
             finishing_node, temp2 = new_worker.trasy[chosen_worker_idx][chosen_node_idx2]
             mutated_path = []
             mutated_path = reconstruct_path(streets.fw_graph, starting_node, finishing_node, mutated_path)
+
             new_path = new_worker.trasy[chosen_worker_idx][:chosen_node_idx1+1] + mutated_path + new_worker.trasy[chosen_worker_idx][chosen_node_idx2:]
             print('w trakcie mutacji1 = ', len(new_worker.P))
 
@@ -175,7 +177,19 @@ def create_new_P(trasy : list, new_path : list, path_idx :int):
 
     return new_P
 
+def create_new_P_Gosi(trasy : list, new_path : list, path_idx :int):
+    new_P = []
+    idx = 0
+    for current_worker in trasy:
+        if idx == path_idx:
+            current_worker = new_path
+        for current_street in current_worker:
+            start, end = current_street
+            if (([start,end]) not in new_P) and (([end,start]) not in new_P):
+                new_P.append(current_street)
+        idx += 1
 
+    return new_P
 
 #__________________________________________________________________________________
 # Funkcje poki co nie uzywane
@@ -193,34 +207,42 @@ def newP(trasy : list):
 def fix  (streets: Street.Streets, new_workers : Worker.Workers):
     x, y = np.where(np.triu(streets.A))
     omitted_streets = []
-    route_lengths_list = new_workers.route_lengths(streets.L)
-    route_lengths_list_copy = route_lengths_list[:]
+    min_index = np.argmin(new_workers.cost)
     temp_flag = True
     path_size = len(new_workers.P)
     for idx in range(0,len(x)):
         if ([x[idx],y[idx]] not in new_workers.P) and ([y[idx],x[idx]] not in new_workers.P):
             omitted_streets.append([x[idx],y[idx]])
-    while len(new_workers.P) < path_size + len(omitted_streets):
-        for idx in range(0, len(omitted_streets)):
-            route_lengths_list = new_workers.route_lengths(streets.L)
-            min_index = np.argmin(new_workers.cost)
-            if len(new_workers.P) == path_size + len(omitted_streets):
-                break
+    for idx in range(0, len(omitted_streets)):
+        cost = deepcopy(new_workers.cost)
+        min_index = np.argmin(cost)
+        temp_flag = False
+        if len(new_workers.P) == path_size + len(omitted_streets):
+            break
 
-            if temp_flag:
-                route_lengths_list_copy[min_index] = -1
-                min_index = np.argmin(new_workers.cost)
-                temp_flag = True
-            for jdx in range(len(new_workers.trasy[min_index])):
-                idx = int(idx)
-                jdx = int(jdx)
-                min_index = int(min_index)
-                if (omitted_streets[idx][0]== new_workers.trasy[min_index][jdx][0])or(omitted_streets[idx][1] == new_workers.trasy[min_index][jdx][1])or(omitted_streets[idx][1]== new_workers.trasy[min_index][jdx][0])or(omitted_streets[idx][0] == new_workers.trasy[min_index][jdx][1]):
-                    new_workers.P.append(omitted_streets[idx])
-                    #print("dlugosc P w fix =",len(new_workers.P))
-                    new_workers.trasy[min_index] = fix_add_street(new_workers.trasy[min_index],omitted_streets[idx][0],omitted_streets[idx][1],jdx)
-                    break
-                temp_flag = False
+
+        while not temp_flag:
+            temp_flag = check_if_possible_to_add(new_workers,min_index,idx,omitted_streets)
+            if not temp_flag:
+                cost[min_index] = 20000
+                min_index = np.argmin(cost)
+
+def check_if_possible_to_add(new_workers,min_index,idx,omitted_streets):
+    for jdx in range(len(new_workers.trasy[min_index])):
+        idx = int(idx)
+        jdx = int(jdx)
+        min_index = int(min_index)
+        if (omitted_streets[idx][0] == new_workers.trasy[min_index][jdx][0]) or (
+                omitted_streets[idx][1] == new_workers.trasy[min_index][jdx][1]) or (
+                omitted_streets[idx][1] == new_workers.trasy[min_index][jdx][0]) or (
+                omitted_streets[idx][0] == new_workers.trasy[min_index][jdx][1]):
+            new_workers.P.append(omitted_streets[idx])
+            print("dlugosc P w fix =", len(new_workers.P))
+            new_workers.trasy[min_index] = fix_add_street(new_workers.trasy[min_index], omitted_streets[idx][0],
+                                                          omitted_streets[idx][1], jdx)
+            return True
+
+    return False
 
 
 def fix_add_street(trasa,x,y,jdx):

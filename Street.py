@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import numpy as np
+from copy import deepcopy
 
 '''
 klasa zawierajaca informacje o ulicach:
@@ -87,7 +88,7 @@ class Streets:
     def Floyd_Warshall(self):  # Floyd-Warshall lub djikstra z BFS
         # Floyd z opensourca,
 
-        G_copy = self.G
+        G_copy = deepcopy(self.G)
         # path reconstruction matrix
         fw_graph = np.zeros(self.G.shape)
         for i in range(0, self.n):
