@@ -29,7 +29,8 @@ temp_list = []
 delta_accepted_list = []
 delta_rejected_list = []
 print('Zainicjowana dlugosc P = ', len(workers.P))
-while temperature > 1:
+P_first = deepcopy(workers.P)
+while temperature > 1 and len(workers.P) == streets.r:
     new_workers = deepcopy(workers)
     Functions.adjacent_solution(new_workers, streets)
     new_workers.calculate_cost(streets)
@@ -59,6 +60,10 @@ while temperature > 1:
     iteration += 1
     temperature *= alfa
 
+for i in workers.P:
+    x,y = i
+    if ([x,y]not in P_first)and([y,x]not in P_first):
+        wtf = [x,y]
 
 plt.plot(iter_list, 'ro')
 plt.show()
