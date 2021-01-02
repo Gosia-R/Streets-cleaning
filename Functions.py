@@ -113,13 +113,13 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
     chosen_type = random.choices(population=[1, 2, 3], weights=[45, 55 / 2, 55 / 2], k=1)  # rozne mutacje maja rozne prawdopodobienstwa
     chosen_type = chosen_type[0]
 
-    #print('przed mutacja = ', len(new_worker.P))
+    print('przed mutacja = ', len(new_worker.P))
     gucci = False
     if chosen_type == 1:  # zmiana ścieżki
 
         while not gucci:
             chosen_worker_idx = random.randrange(0, new_worker.m)  # wybor losowego pracownika
-            chosen_node_idx1 = random.randrange(2, len(new_worker.trasy[chosen_worker_idx])-6)
+            chosen_node_idx1 = random.randrange(1, len(new_worker.trasy[chosen_worker_idx])-5)
             chosen_node_idx2 = random.randrange(3, 5) + chosen_node_idx1
             temp1, starting_node = new_worker.trasy[chosen_worker_idx][chosen_node_idx1]
             finishing_node, temp2 = new_worker.trasy[chosen_worker_idx][chosen_node_idx2]
@@ -134,26 +134,32 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
             noweP = newP(new_worker.trasy)
             new_worker.P = noweP
             '''
-            #print('przed fixem = ', len(new_worker.P))
-            '''
+
+
             new_worker.trasy[chosen_worker_idx] = new_path
             new_worker.P = new_P
             if not is_allowed(streets.r, new_worker.P):
+                #print('przed fixem = ', len(new_worker.P))
                 fix(streets, new_worker)
+                #print('po fixie = ', len(new_worker.P))
                 gucci = True
             '''
             if is_allowed(streets.r, new_P):
                 new_worker.trasy[chosen_worker_idx] = new_path
                 new_worker.P = new_P
                 gucci = True
+            '''
 
-            #print('po fixie = ', len(new_worker.P))
 
     elif chosen_type == 2:
         chosen_worker = random.randrange(0, new_worker.m)  # wybor losowego pracownika
+        for street_idx in range(0, len(new_worker.trasy[chosen_worker])):
+            new_worker.trasy[chosen_worker][street_idx].reverse()
+        '''   
         for street in new_worker.trasy[chosen_worker]:
             street_idx = new_worker.trasy[chosen_worker].index(street)
             new_worker.trasy[chosen_worker][street_idx].reverse()
+        '''
         new_worker.trasy[chosen_worker].reverse()  # pracownik przechodzi trase w inna strone
     elif chosen_type == 3:  # para pracownikow zamienia trasy
         chosen_workers_list = random.choices(new_worker.trasy, k=3)
@@ -229,6 +235,7 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
                 min_index = int(min_index)
                 if (omitted_streets[idx][0]== new_workers.trasy[min_index][jdx][0])or(omitted_streets[idx][1] == new_workers.trasy[min_index][jdx][1])or(omitted_streets[idx][1]== new_workers.trasy[min_index][jdx][0])or(omitted_streets[idx][0] == new_workers.trasy[min_index][jdx][1]):
                     new_workers.P.append(omitted_streets[idx])
+                    #print("dlugosc P w fix =",len(new_workers.P))
                     new_workers.trasy[min_index] = fix_add_street(new_workers.trasy[min_index],omitted_streets[idx][0],omitted_streets[idx][1],jdx)
                     break
                 temp_flag = False
