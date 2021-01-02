@@ -66,30 +66,6 @@ def is_allowed(r : int, test_P : list ): #s sprawdza czy dana mutacja jest dozwo
 def accept_new(): # sprawdza czy przyjmujemy wygenerowane rozwiazenie
     pass
 
-def is_cleaned(street: tuple, helper_matrix: np.array, G: np.array): # funkcja sprawdzajaca czy ulica jest posprzatana
-    starting_index, final_index = street
-    reversed_street = final_index, starting_index     # ta sama ulica moze byc opisana z obu stron ( (3,1) = (1,3))
-    if helper_matrix[street] == 0:   # sprawdzenie czy ktos przeszedl ta ulica, jesli tak to jest ona posprzatana
-        helper_matrix[street] += 1   # ulica jest posprzatana
-        helper_matrix[reversed_street] += 1     # zachowanie symetrycznosci
-        return G[street], helper_matrix      # zwraca koszt posprzatania ulicy zgodny z macierza G oraz zmieniana macierz helper_matrix
-    else:
-        return 0.5, helper_matrix       # zwraca koszt przejscia posprzatana ulica oraz niezmieniona macierz helper_matrix
-
-
-def calculate_cost(workers: Worker.Workers, streets: Street.Streets): # liczy koszt (funkcja celu)
-    current_worker_id = 0
-    cost = 0
-    helper_matrix = np.zeros(streets.G.shape) # macierz sprawdzajaca czy ulica jest posprzatana ( 0 - nie posprzatana, 1 - posprzatana)
-
-    for current_worker in workers.trasy:   # petla przechodzaca po kazdym pracowniku
-        for street in current_worker:   # petla przechodzaca po kazdej ulicy (krotka z numerami wierzcholkow) danego pracownika
-            g_value, helper_matrix = is_cleaned(tuple(street), helper_matrix, streets.G)
-            cost += streets.L[tuple(street)] * g_value / workers.w[current_worker_id] # zwiekszenie funkcji kosztu
-        current_worker_id += 1  # id kolejnego pracownika
-    return cost
-
-
 def reconstruct_path(p, i, j,op):
     if p[i, j] == i:
         op.append([i, j])
@@ -221,13 +197,13 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
     while len(new_workers.P) < path_size + len(omitted_streets):
         for idx in range(0, len(omitted_streets)):
             route_lengths_list = new_workers.route_lengths(streets.L)
-            min_index = route_lengths_list.index(max(route_lengths_list))
+            min_index = np.argmin(new_workers.cost)
             if len(new_workers.P) == path_size + len(omitted_streets):
                 break
 
             if temp_flag:
                 route_lengths_list_copy[min_index] = -1
-                min_index = route_lengths_list_copy.index(max(route_lengths_list_copy))
+                min_index = np.argmin(new_workers.cost)
                 temp_flag = True
             for jdx in range(len(new_workers.trasy[min_index])):
                 idx = int(idx)

@@ -18,7 +18,8 @@ workers = Worker.Workers()
 streets = Street.Streets()
 
 Functions.initialize(workers, streets)
-current_cost = Functions.calculate_cost(workers, streets)
+workers.calculate_cost(streets)
+current_cost = max(workers.cost)
 cost_list = [current_cost]
 delta_list = []
 iteration = 0
@@ -31,8 +32,8 @@ print('Zainicjowana dlugosc P = ', len(workers.P))
 while temperature > 1:
     new_workers = deepcopy(workers)
     Functions.adjacent_solution(new_workers, streets)
-
-    new_cost = Functions.calculate_cost(new_workers, streets)
+    new_workers.calculate_cost(streets)
+    new_cost = max(new_workers.cost)
     delta = current_cost - new_cost
     delta_list.append(delta)
     temp_list.append(temperature)
@@ -54,7 +55,7 @@ while temperature > 1:
 
     #print('iteracja = ', iteration, 'dlugosc P workera = ', len(workers.P), 'dlugosc P new_workera = ', len(new_workers.P))
     cost_list.append(current_cost)
-    print('iteracja = ', iteration, 'koszt = ', current_cost)
+    #print('iteracja = ', iteration, 'koszt = ', current_cost)
     iteration += 1
     temperature *= alfa
 
