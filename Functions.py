@@ -101,8 +101,8 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
     chosen_type = chosen_type[0]
 
     P_first = deepcopy(new_worker.P)
-    print('przed mutacja = ', len(new_worker.P))
-    chosen_type = 1
+    #print('przed mutacja = ', len(new_worker.P))
+    #chosen_type = 1
     if chosen_type == 1:  # zmiana ścieżki
 
         #while not gucci:
@@ -118,7 +118,7 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
                 if ([x, y] not in P_first) and ([y, x] not in P_first):
                     print("mutated zjebalo sb")
             new_path = new_worker.trasy[chosen_worker_idx][:chosen_node_idx1+1] + mutated_path + new_worker.trasy[chosen_worker_idx][chosen_node_idx2:]
-            print('w trakcie mutacji1 = ', len(new_worker.P))
+            #print('w trakcie mutacji1 = ', len(new_worker.P))
             for i in new_path:
                 x, y = i
                 if ([x, y] not in P_first) and ([y, x] not in P_first):
@@ -135,13 +135,13 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
             '''
 
             new_worker.trasy[chosen_worker_idx] = new_path
-            print('w trakcie mutacji12 = ', len(new_worker.P))
+            #print('w trakcie mutacji12 = ', len(new_worker.P))
             new_worker.P = new_P
 
             if not is_allowed(streets.r, new_worker.P):
-                print('przed fixem = ', len(new_worker.P))
+                #print('przed fixem = ', len(new_worker.P))
                 fix(streets, new_worker)
-                print('po fixie = ', len(new_worker.P))
+               # print('po fixie = ', len(new_worker.P))
                 #gucci = True
             '''
             if is_allowed(streets.r, new_P):
@@ -241,6 +241,7 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
 
         while not temp_flag:
             temp_flag = check_if_possible_to_add(new_workers,min_index,idx,omitted_streets)
+            #print('petla jest tu')
             if not temp_flag:
                 cost[min_index] = 20000
                 min_index = np.argmin(cost)

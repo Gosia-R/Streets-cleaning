@@ -45,6 +45,7 @@ class Workers :
 
     def calculate_cost(self, streets: Street.Streets):  # liczy koszt (funkcja celu)
         current_worker_id = 0
+        self.cost = np.zeros(self.m)
         helper_matrix = np.zeros(
             streets.G.shape)  # macierz sprawdzajaca czy ulica jest posprzatana ( 0 - nie posprzatana, 1 - posprzatana)
 
