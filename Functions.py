@@ -55,7 +55,13 @@ def initialize(workers,streets): # inicjalizacja pierwszego rozwiazania
 
         i = 1
     for j in range(0, workers.m):
-       workers.trasy[j] = reconstruct_path(streets.fw_graph, workers.trasy[j][-1][1],0, workers.trasy[j]) #może Floyda robić już w klasie
+        workers.trasy[j] = reconstruct_path(streets.fw_graph, workers.trasy[j][-1][1],0, workers.trasy[j]) #może Floyda robić już w klasie
+        for i in workers.trasy[j]:
+            x, y = i
+            if (not streets.A[x, y]) and (not streets.A[y, x]):
+                print("początek zjebalo sb")
+                print(x, y)
+
     return workers.trasy
 
 
@@ -75,15 +81,18 @@ def reconstruct_path(p, i, j,op):
     elif p[i, j] == -30000:
         print(i, '-', j)
     else:
-        op.append([i, int(p[i, j])])
+        path = [int(p[i, j])]
         k = p[i, j]
         k = int(k)
         while p[i, k] != i:
             k = int(k)
-            op.append([k, int(p[i, k])])
+            path.append(int(p[i, k]))
             k = p[i, k]
             k = int(k)
-        op.append([k, j])
+        op.append([i,path[-1]])
+        for i in range(1,len(path)):
+            op.append([path[-i],path[-1-i]])
+        op.append([path[0], j])
     return op
 
 
@@ -93,7 +102,7 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
 
     P_first = deepcopy(new_worker.P)
     print('przed mutacja = ', len(new_worker.P))
-    gucci = False
+    chosen_type = 1
     if chosen_type == 1:  # zmiana ścieżki
 
         #while not gucci:
@@ -104,17 +113,26 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
             finishing_node, temp2 = new_worker.trasy[chosen_worker_idx][chosen_node_idx2]
             mutated_path = []
             mutated_path = reconstruct_path(streets.fw_graph, starting_node, finishing_node, mutated_path)
-
+            for i in mutated_path:
+                x, y = i
+                if ([x, y] not in P_first) and ([y, x] not in P_first):
+                    print("mutated zjebalo sb")
             new_path = new_worker.trasy[chosen_worker_idx][:chosen_node_idx1+1] + mutated_path + new_worker.trasy[chosen_worker_idx][chosen_node_idx2:]
             print('w trakcie mutacji1 = ', len(new_worker.P))
-
+            for i in new_path:
+                x, y = i
+                if ([x, y] not in P_first) and ([y, x] not in P_first):
+                    print("new_Path zjebalo sb")
             new_P = create_new_P(new_worker.trasy, new_path, chosen_worker_idx)
+            for i in new_P:
+                x, y = i
+                if ([x, y] not in P_first) and ([y, x] not in P_first):
+                    print("new_P zjebalo sb")
             '''
             new_worker.trasy[chosen_worker_idx] = new_path
             noweP = newP(new_worker.trasy)
             new_worker.P = noweP
             '''
-
 
             new_worker.trasy[chosen_worker_idx] = new_path
             print('w trakcie mutacji12 = ', len(new_worker.P))
