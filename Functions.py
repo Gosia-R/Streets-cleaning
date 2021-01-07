@@ -51,16 +51,10 @@ def initialize(workers,streets): # inicjalizacja pierwszego rozwiazania
             else:
                 next_node = finding_next_poit_init_already_cleaned(i, streets.n, workers.P, streets.A)#szukamy następnej ulicy, jakielkolwiek
                 workers.trasy[j].append([i, next_node]) #dodajemy ulicę do trasy
-                #workers.P.append([i, next_node])
-
         i = 1
     for j in range(0, workers.m):
         workers.trasy[j] = reconstruct_path(streets.fw_graph, workers.trasy[j][-1][1],0, workers.trasy[j]) #może Floyda robić już w klasie
-        for i in workers.trasy[j]:
-            x, y = i
-            if (not streets.A[x, y]) and (not streets.A[y, x]):
-                print("początek zjebalo sb")
-                print(x, y)
+
 
     return workers.trasy
 
@@ -101,8 +95,6 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
     chosen_type = chosen_type[0]
 
     P_first = deepcopy(new_worker.P)
-    #print('przed mutacja = ', len(new_worker.P))
-    #chosen_type = 1
     if chosen_type == 1:  # zmiana ścieżki
 
         #while not gucci:
@@ -113,21 +105,8 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
             finishing_node, temp2 = new_worker.trasy[chosen_worker_idx][chosen_node_idx2]
             mutated_path = []
             mutated_path = reconstruct_path(streets.fw_graph, starting_node, finishing_node, mutated_path)
-            for i in mutated_path:
-                x, y = i
-                if ([x, y] not in P_first) and ([y, x] not in P_first):
-                    print("mutated zjebalo sb")
             new_path = new_worker.trasy[chosen_worker_idx][:chosen_node_idx1+1] + mutated_path + new_worker.trasy[chosen_worker_idx][chosen_node_idx2:]
-            #print('w trakcie mutacji1 = ', len(new_worker.P))
-            for i in new_path:
-                x, y = i
-                if ([x, y] not in P_first) and ([y, x] not in P_first):
-                    print("new_Path zjebalo sb")
             new_P = create_new_P(new_worker.trasy, new_path, chosen_worker_idx)
-            for i in new_P:
-                x, y = i
-                if ([x, y] not in P_first) and ([y, x] not in P_first):
-                    print("new_P zjebalo sb")
             '''
             new_worker.trasy[chosen_worker_idx] = new_path
             noweP = newP(new_worker.trasy)
@@ -135,13 +114,10 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
             '''
 
             new_worker.trasy[chosen_worker_idx] = new_path
-            #print('w trakcie mutacji12 = ', len(new_worker.P))
             new_worker.P = new_P
 
             if not is_allowed(streets.r, new_worker.P):
-                #print('przed fixem = ', len(new_worker.P))
                 fix(streets, new_worker)
-               # print('po fixie = ', len(new_worker.P))
                 #gucci = True
             '''
             if is_allowed(streets.r, new_P):
@@ -160,7 +136,6 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
             street_idx = new_worker.trasy[chosen_worker].index(street)
             new_worker.trasy[chosen_worker][street_idx].reverse()
         '''
-        print('w trakcie mutacji2 = ', len(new_worker.P))
         new_worker.trasy[chosen_worker].reverse()  # pracownik przechodzi trase w inna strone
     elif chosen_type == 3:  # para pracownikow zamienia trasy
         chosen_workers_list = random.choices(new_worker.trasy, k=3)
@@ -178,24 +153,9 @@ def adjacent_solution(new_worker : Worker.Workers, streets : Street.Streets): # 
         longest_route_idx = new_worker.trasy.index(chosen_workers_list[route_length_list.index(max(route_length_list))])
         temp = new_worker.trasy[most_efficient_worker]
         new_worker.trasy[most_efficient_worker] = new_worker.trasy[longest_route_idx]
-        print('w trakcie mutacji3 = ', len(new_worker.P))
         new_worker.trasy[longest_route_idx] = temp
 
 def create_new_P(trasy : list, new_path : list, path_idx :int):
-    new_P = []
-    idx = 0
-    for current_worker in trasy:
-        if idx == path_idx:
-            current_worker = new_path
-        for current_street in current_worker:
-            start, end = current_street
-            if (([start,end]) not in new_P) and (([end,start]) not in new_P):
-                new_P.append(current_street)
-        idx += 1
-
-    return new_P
-
-def create_new_P_Gosi(trasy : list, new_path : list, path_idx :int):
     new_P = []
     idx = 0
     for current_worker in trasy:
@@ -225,8 +185,6 @@ def newP(trasy : list):
 def fix  (streets: Street.Streets, new_workers : Worker.Workers):
     x, y = np.where(np.triu(streets.A))
     omitted_streets = []
-    min_index = np.argmin(new_workers.cost)
-    temp_flag = True
     path_size = len(new_workers.P)
     for idx in range(0,len(x)):
         if ([x[idx],y[idx]] not in new_workers.P) and ([y[idx],x[idx]] not in new_workers.P):
@@ -237,11 +195,8 @@ def fix  (streets: Street.Streets, new_workers : Worker.Workers):
         temp_flag = False
         if len(new_workers.P) == path_size + len(omitted_streets):
             break
-
-
         while not temp_flag:
             temp_flag = check_if_possible_to_add(new_workers,min_index,idx,omitted_streets)
-            #print('petla jest tu')
             if not temp_flag:
                 cost[min_index] = 20000
                 min_index = np.argmin(cost)
@@ -256,7 +211,6 @@ def check_if_possible_to_add(new_workers,min_index,idx,omitted_streets):
                 omitted_streets[idx][1] == new_workers.trasy[min_index][jdx][0]) or (
                 omitted_streets[idx][0] == new_workers.trasy[min_index][jdx][1]):
             new_workers.P.append(omitted_streets[idx])
-            print("dlugosc P w fix =", len(new_workers.P))
             new_workers.trasy[min_index] = fix_add_street(new_workers.trasy[min_index], omitted_streets[idx][0],
                                                           omitted_streets[idx][1], jdx)
             return True
