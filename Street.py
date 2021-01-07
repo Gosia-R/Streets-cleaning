@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import numpy as np
+import pandas as pd
 from copy import deepcopy
 
 '''
@@ -48,7 +49,7 @@ class Streets:
                      [1, 1, 1, 0, 0, 1, 0, 1],
                      [0, 0, 0, 1, 0, 1, 1, 0]])
         '''
-        self.n = 40
+        self.n = 20
 
         self.A = self.generate_new_A()
 
@@ -85,6 +86,26 @@ class Streets:
         new_G = np.multiply(self.A, g_matrix)
         return new_G
 
+    def load_matrices(self, folder_path):
+        temp1 = temp2 = temp3 = 0
+        matrices = {'A': temp1, 'G': temp2, 'L': temp3}
+        for key, value in matrices.items():
+            file_path = folder_path + key + '.xlsx'
+            df = pd.read_excel(file_path)
+            matrices[key] = df.to_numpy()
+        self.A = matrices['A']
+        self.G = matrices['G']
+        self.L = matrices['L']
+
+    def save_matrices(self, folder_path):
+        matrices = {'A': self.A, 'G': self.G, 'L': self.L}
+        for key, value in matrices.items():
+            file_path = folder_path + key + '.xlsx'
+            df = pd.DataFrame(data=value)
+            writer = pd.ExcelWriter(file_path, engine='xlsxwriter')
+            df.to_excel(writer, sheet_name='data', index=False)
+            writer.save()
+
     def Floyd_Warshall(self):  # Floyd-Warshall lub djikstra z BFS
         # Floyd z opensourca,
 
@@ -107,4 +128,45 @@ class Streets:
         return fw_graph
 
 
+'''
+#Test zapisywania i wczytywania ulic
+ulice1 = Streets()
+ulice1.save_matrices(r'temp/')
+ulice2 = Streets()
+print(ulice2.A)
+ulice2.load_matrices(r'temp/')
 
+print('ul1', ulice1.A)
+print('ul2', ulice2.A)
+'''
+
+'''
+#miasto z mostem 
+
+ulica = Streets()
+print('To jest poczatkowe A:')
+print(ulica.A)
+for row in range(int(ulica.n/2), ulica.n):
+    for col in range(int(ulica.n/2)):
+        ulica.A[row][col] = 0
+
+for row in range(int(ulica.n/2)):
+    for col in range(int(ulica.n/2), ulica.n):
+        ulica.A[row][col] = 0
+
+ulica.A[15,3] = 1
+ulica.A[3,15] = 1
+print('\n \n To jest zmienione A:')
+print(ulica.A)
+
+ulica.G = ulica.generate_new_G()
+ulica.L = ulica.generate_new_L(20, 80)
+print('\n\n To jest zmienione G:')
+print(ulica.G)
+print('\n\n To jest zmienione L:')
+print(ulica.L)
+ulica.save_matrices(folder_path=r'most/')
+'''
+
+ulica = Streets()
+ulica.save_matrices(folder_path=r'przypadki_testowe/maly/')

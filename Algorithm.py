@@ -7,11 +7,12 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 from copy import deepcopy
+import time
 
 '''
 sama algorytm, wszystkie funkcje w osobnym pliku
 '''
-
+tic = time.clock()
 temperature = 10000
 alfa = 0.99
 workers = Worker.Workers()
@@ -30,7 +31,7 @@ delta_accepted_list = []
 delta_rejected_list = []
 print('Zainicjowana dlugosc P = ', len(workers.P))
 P_first = deepcopy(workers.P)
-while temperature > 1 and len(workers.P) == streets.r:
+while temperature > 1:
     new_workers = deepcopy(workers)
     Functions.adjacent_solution(new_workers, streets)
     new_workers.calculate_cost(streets)
@@ -49,25 +50,24 @@ while temperature > 1 and len(workers.P) == streets.r:
             delta_accepted_list.append(delta)
         else:
             idx += 1
-            #print('nie zaakceptowano po raz : ', idx, ' w iteracji nr :', iteration)
+            # print('nie zaakceptowano po raz : ', idx, ' w iteracji nr :', iteration)
             iter_list.append(iteration)
             delta_rejected_list.append(delta)
             pass
 
-    #print('iteracja = ', iteration, 'dlugosc P workera = ', len(workers.P), 'dlugosc P new_workera = ', len(new_workers.P))
+    # print('iteracja = ', iteration, 'dlugosc P workera = ', len(workers.P), 'dlugosc P new_workera = ', len(new_workers.P))
     cost_list.append(current_cost)
-    print('iteracja = ', iteration, 'koszt = ', current_cost)
+    # print('iteracja = ', iteration, 'koszt = ', current_cost)
     iteration += 1
     temperature *= alfa
+toc = time.clock()
 
-for i in workers.P:
-    x,y = i
-    if ([x,y]not in P_first)and([y,x]not in P_first):
-        wtf = [x,y]
+Functions.print_time()
 
+# ________________wykresiki_________________________
+print('Czas trwania algorytmu to: ', toc - tic, 's')
 plt.plot(iter_list, 'ro')
 plt.show()
-
 
 plt.plot(cost_list)
 plt.ylabel('time [mimutes]')
