@@ -68,23 +68,12 @@ while temperature > 1:
 toc = time.clock()
 
 Functions.print_time()
-list_of_streets = []
-counter = np.zeros([workers.m])
-for i in range(workers.m):
-    for x,y in workers.trasy[i]:
-        #x,y = j
-        if ([x,y] in list_of_streets) or ([y,x] in list_of_streets):
-            counter[i] = counter[i] + 1
-        else:
-            list_of_streets.append([x,y])
-mean_of_repetition = counter.mean()
-
 last_cost = max(workers.cost)
 last_sum_cost = sum(workers.cost)
 
 print("Funkcja celu zmalała o ", last_cost/first_cost * 100, '%')
 print("Całkowity czas zmalał o ", last_sum_cost/first_sum_cost * 100, '%')
-print("Średnio ulice powtarzają się", mean_of_repetition)
+print("Średnio ulice powtarzają się", Functions.mean_of_repeating_streets(workers))
 print("Minimum osiągnięto w iteracji:", when_minimum)
 # ________________wykresiki_________________________
 print('Czas trwania algorytmu to: ', toc - tic, 's')

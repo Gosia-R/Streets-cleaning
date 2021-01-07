@@ -263,3 +263,16 @@ def average_time(workers: Worker.Workers):
 
 def inequality(workers: Worker.Workers):
     return np.amax(workers.cost) - np.amin(workers.cost)
+
+def mean_of_repeating_streets(workers: Worker.Workers):
+    list_of_streets = []
+    counter = np.zeros([workers.m])
+    for i in range(workers.m):
+        for x, y in workers.trasy[i]:
+            # x,y = j
+            if ([x, y] in list_of_streets) or ([y, x] in list_of_streets):
+                counter[i] = counter[i] + 1
+            else:
+                list_of_streets.append([x, y])
+    mean_of_repetition = counter.mean()
+    return mean_of_repetition
