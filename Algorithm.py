@@ -119,7 +119,7 @@ def make_edge(x, y, text, width):
                        text      = ([text]),
                        mode      = 'lines')
 
-def plot_path(workers, streets):
+def plot_path(workers):
 
     U = nx.DiGraph()
     colors = ['r','g','b']
