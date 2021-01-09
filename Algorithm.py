@@ -4,10 +4,8 @@ import random
 import time
 from copy import deepcopy
 import networkx as nx
-import  matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-import plotly.graph_objects as go
 
 import Functions
 import Street
@@ -75,8 +73,8 @@ Functions.print_time()
 last_cost = max(workers.cost)
 last_sum_cost = sum(workers.cost)
 
-print("Funkcja celu zmalała o ", last_cost/first_cost * 100, '%')
-print("Całkowity czas zmalał o ", last_sum_cost/first_sum_cost * 100, '%')
+print("Funkcja celu zmalała o ",  (first_cost - last_cost)/first_cost * 100, '%')
+print("Całkowity czas zmalał o ", (first_sum_cost - last_sum_cost)/first_sum_cost * 100, '%')
 x = Functions.mean_of_repeating_streets(workers)
 print("Średnio ulice powtarzają się", Functions.mean_of_repeating_streets(workers))
 print("Minimum osiągnięto w iteracji:", when_minimum)
@@ -109,15 +107,6 @@ ax2.set_title('rejected')
 plt.show()
 
 
-
-def make_edge(x, y, text, width):
-    return  go.Scatter(x         = x,
-                       y         = y,
-                       line      = dict(width = width,
-                                   color = 'cornflowerblue'),
-                       hoverinfo = 'text',
-                       text      = ([text]),
-                       mode      = 'lines')
 
 def plot_path(workers):
 
