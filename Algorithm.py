@@ -27,7 +27,7 @@ all_deltas = []
 all_delta_rejected = []
 all_delta_accepted = []
 
-for batch in range(10):
+for batch in range(2):
     print(' \n\n\nCURRENT BATCH ', batch)
     tic = time.clock()
     # ________parametry algorytmu____________
@@ -68,7 +68,7 @@ for batch in range(10):
         delta_list.append(delta)
         temp_list.append(temperature)
 
-        if delta > 0:
+        if delta >= 0:
             workers = deepcopy(new_workers)
             current_cost = deepcopy(new_cost)
         else:
@@ -82,7 +82,7 @@ for batch in range(10):
                 pass
 
         cost_list.append(current_cost)
-        print('iteracja = ', iteration, 'koszt = ', current_cost)
+        #print('iteracja = ', iteration, 'koszt = ', current_cost)
         iteration += 1
         temperature *= alfa
 
@@ -109,8 +109,8 @@ for batch in range(10):
 
     # ________________printy______________
     print('Czas trwania algorytmu to: ', toc - tic, 's')
-    '''
     Functions.print_time()
+    '''
     print("Funkcja celu zmalała o ", last_cost/first_cost * 100, '%')
     print("Całkowity czas zmalał o ", last_sum_cost/first_sum_cost * 100, '%')
     print('Ilość ulic w miescie = ', streets.r)
@@ -119,6 +119,50 @@ for batch in range(10):
     print('Difference between longest and shortest work time', Functions.inequality(workers)) # to pownno byc w klasie worker
     print("Minimum osiągnięto w iteracji:", when_minimum)
 '''
+
+metrics = [avg_time, avg_work_time, avg_revisited, difference, how_much_better, total_how_much_better]
+df = pd.DataFrame(data={'avg_time': avg_time, 'avg_work_time': avg_work_time, 'avg_revisited': avg_revisited, 'diffy': difference, 'how_much_better': how_much_better, 'total_better': total_how_much_better})
+writer = pd.ExcelWriter('metrics.xlsx', engine='xlsxwriter')
+df.to_excel(writer, sheet_name='data', index=False)
+writer.save()
+
+
+# ________________ploty_________________________
+
+best_idx = how_much_better.index(np.max(how_much_better))
+worst_idx = how_much_better.index(np.min(how_much_better))
+mean_cost = np.mean(all_costs, axis=0)
+max_cost = all_costs[best_idx]
+min_cost = all_costs[worst_idx]
+
+plt.plot(mean_cost)
+plt.plot(max_cost)
+plt.plot(min_cost)
+plt.legend(('mean','best','worst'))
+plt.title('Cost function')
+plt.ylabel('time [minutes]')
+plt.xlabel('number of iterations')
+plt.show()
+
+plt.plot(all_rejected[best_idx], 'ro')
+plt.title('Rejected solutions')
+plt.xlabel('Rejected solution')
+plt.ylabel('Number of iteration')
+plt.show()
+
+plt.plot(all_deltas[best_idx])
+plt.title('Delta')
+plt.xlabel('Number of iteration')
+plt.ylabel('Value of delta')
+plt.show()
+
+ax = plt.subplot(211)
+ax.plot(all_delta_accepted[best_idx], 'o')
+ax.set_title('accepted')
+ax2 = plt.subplot(212)
+ax2.plot(all_delta_rejected[best_idx], 'o')
+ax2.set_title('rejected')
+plt.show()
 '''
     # ________________ploty_________________________
 
@@ -142,28 +186,6 @@ for batch in range(10):
     ax2.set_title('rejected')
     plt.show()
 '''
-'''
-metrics = [avg_time, avg_work_time, avg_revisited, difference, how_much_better, total_how_much_better]
-df = pd.DataFrame(data={'avg_time': avg_time, 'avg_work_time': avg_work_time, 'avg_revisited': avg_revisited, 'diffy': difference, 'how_much_better': how_much_better, 'total_better': total_how_much_better})
-writer = pd.ExcelWriter('metrics.xlsx', engine='xlsxwriter')
-df.to_excel(writer, sheet_name='data', index=False)
-writer.save()
-'''
-
-mean_cost = np.mean(all_costs, axis=0)
-
-# NIE TAK DOBIERAĆ NAJLEPSZEI NAJGORSZE ROZWIAZANIE
-max_cost = np.max(all_costs, axis=0)
-min_cost = np.min(all_costs, axis=0)
-
-plt.plot(mean_cost)
-plt.plot(max_cost)
-plt.plot(min_cost)
-plt.legend(('mean','best','worst'))
-plt.ylabel('time [minutes]')
-plt.xlabel('number of iterations')
-plt.show()
-
 
 
 def plot_path(workers):

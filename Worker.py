@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import Street
+import pandas as pd
 '''
 klasa zawierajaca informacje o pracownikach:
 -ich wydajnosc
@@ -10,11 +11,12 @@ klasa zawierajaca informacje o pracownikach:
 
 class Workers :
     def __init__(self):
-        self.m = 2# ilosc pracownikow
 
-        self.w = [3,7]
+        self.w = [10, 10, 30, 30, 50, 50, 70, 70, 90, 90, 110, 110]
         '''[20, 10, 30, 10, 60, 10, 70, 10, 50, 10,
                   10, 10, 80, 10, 40, 10, 40, 10, 40, 20]'''
+
+        self.m = len(self.w) # ilosc pracownikow
 
         self.trasy = [] # wektor zawierajacy kolejno ulice (para wierzcholkow) ktorymi przechodzi kazdy pracownik
 
@@ -59,3 +61,10 @@ class Workers :
 
     def reset_P(self):
         self.P = []
+
+    def save_paths(self, folder_path):
+        file_path = folder_path +'.xlsx'
+        df = pd.DataFrame(data=self.trasy)
+        writer = pd.ExcelWriter(file_path, engine='xlsxwriter')
+        df.to_excel(writer, sheet_name='data', index=False)
+        writer.save()
