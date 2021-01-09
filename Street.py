@@ -76,9 +76,7 @@ class Streets:
             df.to_excel(writer, sheet_name='data', index=False)
             writer.save()
 
-    def Floyd_Warshall(self):  # Floyd-Warshall lub djikstra z BFS
-        # Floyd z opensourca,
-
+    def Floyd_Warshall(self):  # Floyd-Warshall lub djikstra z BFS,
         G_copy = deepcopy(self.G)
         # path reconstruction matrix
         fw_graph = np.zeros(self.G.shape)

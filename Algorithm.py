@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import Street
 import Worker
 import Functions
@@ -9,6 +10,7 @@ import matplotlib.pyplot as plt
 from copy import deepcopy
 import time
 import pandas as pd
+import networkx as nx
 
 # ___________ metrics _______________
 avg_time = []
@@ -89,21 +91,21 @@ for batch in range(10):
     last_cost = max(workers.cost)
     last_sum_cost = sum(workers.cost)
 
-    # _______ append metrics _____________ 
+    # _______ append metrics _____________
     avg_time.append(toc-tic)
     avg_revisited.append(Functions.mean_of_repeating_streets(workers))
     avg_work_time.append(Functions.average_time(workers))
-    how_much_better.append(last_cost/first_cost * 100)
-    total_how_much_better.append(last_sum_cost/first_sum_cost * 100)
+    how_much_better.append((first_cost - last_cost)/first_cost * 100)
+    total_how_much_better.append((first_sum_cost - last_sum_cost)/first_sum_cost * 100)
     difference.append(Functions.inequality(workers))
-    
+
     # _______ append plots _______________
     all_costs.append(cost_list)
     all_delta_accepted.append(delta_accepted_list)
     all_delta_rejected.append(delta_rejected_list)
     all_deltas.append(delta_list)
     all_rejected.append(rejected_list)
-    
+
 
     # ________________printy______________
     print('Czas trwania algorytmu to: ', toc - tic, 's')
@@ -161,3 +163,21 @@ plt.legend(('mean','best','worst'))
 plt.ylabel('time [minutes]')
 plt.xlabel('number of iterations')
 plt.show()
+
+
+
+def plot_path(workers):
+
+    U = nx.DiGraph()
+    colors = ['r','g','b']
+    for i in range(len(workers.trasy)):
+        for w in range(len(workers.trasy[i])):
+            U.add_edge(workers.trasy[i][w][0], workers.trasy[i][w][1],color = colors[i])
+    edges = U.edges()
+    colors = [U[u][v]['color'] for u,v in edges]
+    nx.draw(U, pos=nx.spring_layout(U),edges = edges, edge_color = colors, with_labels=True)
+    ax = plt.gca()
+    ax.margins(0.20)
+    plt.axis("off")
+    plt.show()
+
