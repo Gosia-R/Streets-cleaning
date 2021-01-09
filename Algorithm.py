@@ -1,13 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import random
+import time
+from copy import deepcopy
+import networkx as nx
+import  matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+import plotly.graph_objects as go
+
+import Functions
 import Street
 import Worker
-import Functions
-import random
-import numpy as np
-import matplotlib.pyplot as plt
-from copy import deepcopy
-import time
 
 '''
 sama algorytm, wszystkie funkcje w osobnym pliku
@@ -73,8 +77,10 @@ last_sum_cost = sum(workers.cost)
 
 print("Funkcja celu zmalała o ", last_cost/first_cost * 100, '%')
 print("Całkowity czas zmalał o ", last_sum_cost/first_sum_cost * 100, '%')
+x = Functions.mean_of_repeating_streets(workers)
 print("Średnio ulice powtarzają się", Functions.mean_of_repeating_streets(workers))
 print("Minimum osiągnięto w iteracji:", when_minimum)
+
 # ________________wykresiki_________________________
 print('Czas trwania algorytmu to: ', toc - tic, 's')
 plt.plot(iter_list, 'ro')
@@ -101,3 +107,30 @@ ax2 = plt.subplot(212)
 ax2.plot(delta_rejected_list, 'o')
 ax2.set_title('rejected')
 plt.show()
+
+
+
+def make_edge(x, y, text, width):
+    return  go.Scatter(x         = x,
+                       y         = y,
+                       line      = dict(width = width,
+                                   color = 'cornflowerblue'),
+                       hoverinfo = 'text',
+                       text      = ([text]),
+                       mode      = 'lines')
+
+def plot_path(workers, streets):
+
+    U = nx.DiGraph()
+    colors = ['r','g','b']
+    for i in range(len(workers.trasy)):
+        for w in range(len(workers.trasy[i])):
+            U.add_edge(workers.trasy[i][w][0], workers.trasy[i][w][1],color = colors[i])
+    edges = U.edges()
+    colors = [U[u][v]['color'] for u,v in edges]
+    nx.draw(U, pos=nx.spring_layout(U),edges = edges, edge_color = colors, with_labels=True)
+    ax = plt.gca()
+    ax.margins(0.20)
+    plt.axis("off")
+    plt.show()
+

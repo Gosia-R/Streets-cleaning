@@ -114,7 +114,7 @@ class Streets:
         g_matrix = u_g_matrix + l_g_matrix
         new_G = np.multiply(self.A, g_matrix)
         return new_G
-
+    '''
     def load_matrices(self, folder_path):
         temp1 = temp2 = temp3 = 0
         matrices = {'A': temp1, 'G': temp2, 'L': temp3}
@@ -134,10 +134,9 @@ class Streets:
             writer = pd.ExcelWriter(file_path, engine='xlsxwriter')
             df.to_excel(writer, sheet_name='data', index=False)
             writer.save()
+    '''
 
-    def Floyd_Warshall(self):  # Floyd-Warshall lub djikstra z BFS
-        # Floyd z opensourca,
-
+    def Floyd_Warshall(self):  # Floyd-Warshall lub djikstra z BFS,
         G_copy = deepcopy(self.G)
         # path reconstruction matrix
         fw_graph = np.zeros(self.G.shape)
@@ -197,5 +196,5 @@ print(ulica.L)
 ulica.save_matrices(folder_path=r'most/')
 '''
 
-ulica = Streets()
-ulica.save_matrices(folder_path=r'przypadki_testowe/maly/')
+#ulica = Streets()
+#ulica.save_matrices(folder_path=r'przypadki_testowe/maly/')
