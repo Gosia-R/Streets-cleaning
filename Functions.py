@@ -6,20 +6,18 @@ import Street
 import random
 from copy import deepcopy
 import time
+import networkx as nx
+import matplotlib.pyplot as plt
 
 fix_time = []
 adj1_time = []
 adj2_time = []
 adj3_time = []
 
-# Stworzenie obiektów będzie pomagać
-# workers = Worker.Workers()
-# streets = Street.Streets()
+
 
 '''
 funkcje potrzebne do algorytmu
-
-
 '''
 
 
@@ -276,3 +274,18 @@ def mean_of_repeating_streets(workers: Worker.Workers):
                 list_of_streets.append([x, y])
     mean_of_repetition = counter.mean()
     return mean_of_repetition
+
+def plot_path(workers):
+
+    U = nx.DiGraph()
+    colors = ['r','g','b']
+    for i in range(len(workers.trasy)):
+        for w in range(len(workers.trasy[i])):
+            U.add_edge(workers.trasy[i][w][0], workers.trasy[i][w][1],color = colors[i])
+    edges = U.edges()
+    colors = [U[u][v]['color'] for u,v in edges]
+    nx.draw(U, pos=nx.spring_layout(U),edges = edges, edge_color = colors, with_labels=True)
+    ax = plt.gca()
+    ax.margins(0.20)
+    plt.axis("off")
+    plt.show()

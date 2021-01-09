@@ -16,7 +16,7 @@ klasa zawierajaca informacje o ulicach:
 class Streets:
     def __init__(self):
 
-        self.n = 100
+        self.n = 40
 
         self.A = self.generate_new_A()
 
@@ -94,49 +94,3 @@ class Streets:
                         G_copy[i, j] = G_copy[i, k] + G_copy[k, j]
                         fw_graph[i, j] = fw_graph[k, j]
         return fw_graph
-
-
-'''
-#Test zapisywania i wczytywania ulic
-ulice1 = Streets()
-ulice1.save_matrices(r'temp/')
-ulice2 = Streets()
-print(ulice2.A)
-ulice2.load_matrices(r'temp/')
-
-print('ul1', ulice1.A)
-print('ul2', ulice2.A)
-'''
-
-'''
-#miasto z mostem 
-
-ulica = Streets()
-print('To jest poczatkowe A:')
-print(ulica.A)
-for row in range(int(ulica.n/2), ulica.n):
-    for col in range(int(ulica.n/2)):
-        ulica.A[row][col] = 0
-
-for row in range(int(ulica.n/2)):
-    for col in range(int(ulica.n/2), ulica.n):
-        ulica.A[row][col] = 0
-
-ulica.A[15,3] = 1
-ulica.A[3,15] = 1
-print('\n \n To jest zmienione A:')
-print(ulica.A)
-
-ulica.G = ulica.generate_new_G()
-ulica.L = ulica.generate_new_L(20, 80)
-print('\n\n To jest zmienione G:')
-print(ulica.G)
-print('\n\n To jest zmienione L:')
-print(ulica.L)
-ulica.save_matrices(folder_path=r'most/')
-'''
-
-'''
-ulica = Streets()
-ulica.save_matrices(folder_path=r'przypadki_testowe/normalny/')
-'''
